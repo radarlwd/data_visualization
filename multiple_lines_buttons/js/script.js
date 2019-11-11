@@ -1,14 +1,19 @@
+var xMax = { "value": 600.2 };
+var yMax = { "value": 0 };
+var yLabels = { abs_pos: "abs_pos (m)", CO: "CO (mg/s)", NOx: "NOx (mg/s)", fuel: "fuel (ml/s)", PMx: "PMx (mg/s)", speed: "speed (m/s)" };
+var selectedType;
+var duration = 5000;
 var margin = { top: 60, right: 20, bottom: 30, left: 50 },
     // width = 700 - margin.left - margin.right,
-    width = 1000 - margin.left - margin.right,
-    height = 365 - margin.top - margin.bottom;
+    width = 1600 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
 
 var x = d3.scaleLinear()
-    .domain([0, 600.2])
+    .domain([0, xMax.value])
     .range([0, width]);
 
 var y = d3.scaleLinear()
-    .domain([0, 260])
+    .domain([0, yMax.value])
     .range([height, 0]);
 
 var xAxis = d3.axisBottom()
@@ -19,10 +24,11 @@ var yAxis = d3.axisLeft()
 
 
 var line = d3.line()
-    .x(function (d) { return x(d.time); })
-    .y(function (d) { return y(d.abs_pos); });
-    // .x(function (d) { return x(d.x); })
-    // .y(function (d) { return y(d.y); });
+    // .x(function (d) { return x(d.time); })
+    // .y(function (d) { return y(d.abs_pos); });
+    .defined(function (d) { return selectedType != 'abs_pos' || d.y > 1; }) //avoid connecting the end point in one cyle to the start point of the next cycle
+    .x(function (d) { return x(d.x); })
+    .y(function (d) { return y(d.y); });
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -30,17 +36,23 @@ var svg = d3.select("body").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
 // *********************************
 
 
-d3.csv("id_abspos_time_0_1.csv", function (error, data) {
+d3.csv("desired_data.csv", function (error, data) {
     if (error) throw error;
-    console.log(data);
+    // console.log(data);
 
-    // var typeMap = {"abs_pos" : {"values": {"x": data.time, "y": data.abs_pos}},
-    //             "time": {"values": {"x": data.time, "y": data.index}}};
+    var typeMap = {
+        "abs_pos": { "x": data.time, "y": data.abs_pos, "id": data.id },
+        "time": { "x": data.time, "y": data.index, "id": data.id }
+    };
     // x.domain(d3.extent(data, function (d) { return d.index; }));
     // y.domain(d3.extent(data, function (d) { return d.abs_pos; }));
+    console.log(data);
+
+
 
     svg.append("g")
         .attr("class", "x axis")
@@ -55,16 +67,32 @@ d3.csv("id_abspos_time_0_1.csv", function (error, data) {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Unemployment Rate (%)");
+
+    var yLabel = svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Value");
+
+    svg.append("text")
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("x", width / 2)
+        .attr("y", height + margin.bottom)
+        .text("Timestep (sec.)");
 
     // selectbutton ********************************************
 
     // List of groups (here I have one group per column)
-    var allGroup = d3.map(data, function (d) { return (d.id) }).keys()
+    var num_cars = d3.map(data, function (d) { return (d.id) }).keys()
+    var allGroup = ['Select Type of Variable', 'abs_pos', 'CO', 'NOx', 'fuel', 'PMx', 'speed'];
     var numberArray = [];
-    for (var i = 1; i <= allGroup.length; i++) {
+    for (var i = 1; i <= num_cars.length; i++) {
         numberArray.push(i);
     }
+    numberArray.unshift("Select Number of Vehicles");
+
     // add the options to the button
     d3.select("#selectTypeButton")
         .selectAll('myOptions')
@@ -73,6 +101,11 @@ d3.csv("id_abspos_time_0_1.csv", function (error, data) {
         .append('option')
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; }) // corresponding value returned by the button
+        .each(function (d) {
+            if (d === "Select Type of Variable") {
+                d3.select(this).property("disabled", true)
+            }
+        });
 
     // add the options to the button
     d3.select("#selectNumButton")
@@ -82,6 +115,11 @@ d3.csv("id_abspos_time_0_1.csv", function (error, data) {
         .append('option')
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; }) // corresponding value returned by the button
+        .each(function (d) {
+            if (d === "Select Number of Vehicles") {
+                d3.select(this).property("disabled", true)
+            }
+        });
 
     // A color scale: one color for each group
     // var myColor = d3.scaleOrdinal()
@@ -110,7 +148,7 @@ d3.csv("id_abspos_time_0_1.csv", function (error, data) {
     //************select button animation****************
     // A function that update the chart
     var numLines = numberArray[0];
-    function update(selectedGroup) {
+    function update(selectedOption) {
 
         // Create new data with the selection?
         // var dataFilter = data.filter(function(d){return d.name==selectedGroup})
@@ -155,20 +193,89 @@ d3.csv("id_abspos_time_0_1.csv", function (error, data) {
 
         //**************************multiple lines */
 
+        // var allLines = svg.selectAll(".line")
+        // .data(data);
+
+        // allLines.exit().remove();
+        d3.selectAll(".line").remove();
+        d3.select(".line").remove();
+        var dataToPlot = [];
+        var curYMax = Number.NEGATIVE_INFINITY;
+
+        // function getMaxY(){
+        //     return data.reduce((max, b) => Math.max(max, b.abs_pos), data[0].abs_pos);
+        //   }
+
+        if (selectedOption == "abs_pos") {
+            for (i = 0; i < data.length; ++i) {
+                dataToPlot.push({ "id": data[i].id, "x": data[i].time, "y": data[i].abs_pos });
+            }
+            curYMax = data.reduce((max, b) => Math.max(max, b.abs_pos), data[0].abs_pos);
+        } else if (selectedOption == "CO") {
+            for (i = 0; i < data.length; ++i) {
+                dataToPlot.push({ "id": data[i].id, "x": data[i].time, "y": data[i].CO });
+            }
+            curYMax = data.reduce((max, b) => Math.max(max, b.CO), data[0].CO);
+        } else if (selectedOption == "NOx") {
+            for (i = 0; i < data.length; ++i) {
+                dataToPlot.push({ "id": data[i].id, "x": data[i].time, "y": data[i].NOx });
+            }
+            curYMax = data.reduce((max, b) => Math.max(max, b.NOx), data[0].NOx);
+        } else if (selectedOption == "fuel") {
+            for (i = 0; i < data.length; ++i) {
+                dataToPlot.push({ "id": data[i].id, "x": data[i].time, "y": data[i].fuel });
+            }
+            curYMax = data.reduce((max, b) => Math.max(max, b.fuel), data[0].fuel);
+        } else if (selectedOption == "PMx") {
+            for (i = 0; i < data.length; ++i) {
+                dataToPlot.push({ "id": data[i].id, "x": data[i].time, "y": data[i].PMx });
+            }
+            curYMax = data.reduce((max, b) => Math.max(max, b.PMx), data[0].PMx);
+        } else if (selectedOption == "speed") {
+            for (i = 0; i < data.length; ++i) {
+                dataToPlot.push({ "id": data[i].id, "x": data[i].time, "y": data[i].speed });
+            }
+            curYMax = data.reduce((max, b) => Math.max(max, b.speed), data[0].speed);
+        }
+        // curYMax = Math.ceil(curYMax);
+
+        // update axis based on selection
+        y = d3.scaleLinear()
+            .domain([0, curYMax])
+            .range([height, 0]);
+
+        yAxis = d3.axisLeft()
+            .scale(y);
+
+        svg.selectAll("g.y.axis")
+            .call(yAxis);
+
+        // svg.append("text")
+        //     .attr("transform", "rotate(-90)")
+        //     .attr("y", 0 - margin.left)
+        //     .attr("x", 0 - (height / 2))
+        //     .attr("dy", "1em")
+        //     .style("text-anchor", "middle")
+        //     .text(yLabels[selectedType]);
+        yLabel.text(yLabels[selectedType]);
+
         // nest ****************************************************
-        console.log("update selection " + numLines);
+        console.log("update selection " + selectedOption);
         // Nest the entries by symbol
         var dataNest = d3.nest()
             .key(function (d) { return d.id; })// use as key
-            .entries(data);
+            // .entries(data);
+            .entries(dataToPlot);
+
 
         var color = d3.scaleOrdinal(d3.schemeCategory10);  // set the colour scale
 
+        var remainingTime = numLines;
         // Loop through each symbol / key
         dataNest.forEach(function (d) {
 
-            if (numLines > 0) {
-                --numLines;
+            if (remainingTime > 0) {
+                --remainingTime;
                 console.log("added line " + availableTime);
                 // ***************************
                 var path = svg.append("path")
@@ -188,7 +295,7 @@ d3.csv("id_abspos_time_0_1.csv", function (error, data) {
                     .attr("stroke-dasharray", totalLength + " " + totalLength)
                     .attr("stroke-dashoffset", totalLength)
                     .transition() // Call Transition Method
-                    .duration(4000) // Set Duration timing (ms) 500000
+                    .duration(duration) // Set Duration timing (ms) 500000
                     .ease(d3.easeLinear) // Set Easing option
                     .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
             }
@@ -201,9 +308,9 @@ d3.csv("id_abspos_time_0_1.csv", function (error, data) {
     // When the button is changed, run the updateChart function
     d3.select("#selectTypeButton").on("change", function (d) {
         //   // recover the option that has been chosen
-        var selectedOption = d3.select(this).property("value")
+        selectedType = d3.select(this).property("value");
         //   // run the updateChart function with this selected option
-        update(selectedOption)
+        update(selectedType);
     })
 
     // When the button is changed, run the updateChart function
@@ -213,6 +320,21 @@ d3.csv("id_abspos_time_0_1.csv", function (error, data) {
         //   // run the updateChart function with this selected option
         numLines = selectedOption;
         console.log("I have " + numLines + " lines.");
+        // d3.select(".line").remove();
+        update(selectedType);
+
     })
+
+
+    // Slider
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function () {
+        output.innerHTML = this.value;
+        duration = 1/this.value *100000;
+    }
 
 });
