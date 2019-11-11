@@ -3,10 +3,11 @@ var yMax = { "value": 0 };
 var yLabels = { abs_pos: "abs_pos (m)", CO: "CO (mg/s)", NOx: "NOx (mg/s)", fuel: "fuel (ml/s)", PMx: "PMx (mg/s)", speed: "speed (m/s)" };
 var selectedType;
 var duration = 5000;
-var margin = { top: 60, right: 20, bottom: 30, left: 50 },
-    // width = 700 - margin.left - margin.right,
-    width = 1600 - margin.left - margin.right,
-    height = 600 - margin.top - margin.bottom;
+const GRAPH_WIDTH = 1600 // ADJUST
+const GRAPH_HEIGHT = 600 // ADJUST
+var margin = { top: 60, right: 20, bottom: 30, left: 50 }, // ADJUST
+    width = GRAPH_WIDTH - margin.left - margin.right,
+    height = GRAPH_HEIGHT - margin.top - margin.bottom;
 
 var x = d3.scaleLinear()
     .domain([0, xMax.value])
@@ -24,8 +25,6 @@ var yAxis = d3.axisLeft()
 
 
 var line = d3.line()
-    // .x(function (d) { return x(d.time); })
-    // .y(function (d) { return y(d.abs_pos); });
     .defined(function (d) { return selectedType != 'abs_pos' || d.y > 1; }) //avoid connecting the end point in one cyle to the start point of the next cycle
     .x(function (d) { return x(d.x); })
     .y(function (d) { return y(d.y); });
@@ -38,8 +37,6 @@ var svg = d3.select("body").append("svg")
 
 
 // *********************************
-
-
 d3.csv("desired_data.csv", function (error, data) {
     if (error) throw error;
     // console.log(data);
@@ -48,11 +45,7 @@ d3.csv("desired_data.csv", function (error, data) {
         "abs_pos": { "x": data.time, "y": data.abs_pos, "id": data.id },
         "time": { "x": data.time, "y": data.index, "id": data.id }
     };
-    // x.domain(d3.extent(data, function (d) { return d.index; }));
-    // y.domain(d3.extent(data, function (d) { return d.abs_pos; }));
     console.log(data);
-
-
 
     svg.append("g")
         .attr("class", "x axis")
@@ -121,90 +114,18 @@ d3.csv("desired_data.csv", function (error, data) {
             }
         });
 
-    // A color scale: one color for each group
-    // var myColor = d3.scaleOrdinal()
-    //   .domain(allGroup)
-    //   .range(d3.schemeSet2);
-
-    // //*********************************************************
-
     var availableTime = 0;
-
-    // Reset Animation
-    // d3.select("#reset").on("click", function () {
-    // if (availableTime > 0) {
-    //     d3.select(".line").remove();
-
-    //     availableTime--;
-
-    //     var ts = new Date();
-    //     console.log(ts.toLocaleString() + "haha");
-    // } else {
-    //     console.log("No more line to delete!");
-    // };
-
-    // });
 
     //************select button animation****************
     // A function that update the chart
     var numLines = numberArray[0];
     function update(selectedOption) {
 
-        // Create new data with the selection?
-        // var dataFilter = data.filter(function(d){return d.name==selectedGroup})
-
-        // Give these new data to update line
-        // line
-        //     .datum(dataFilter)
-        //     .transition()
-        //     .duration(1000)
-        //     .attr("d", d3.line()
-        //       .x(function(d) { return x(d.year) })
-        //       .y(function(d) { return y(+d.n) })
-        //     )
-        //     .attr("stroke", function(d){ return myColor(selectedGroup) })
-
-        //************************** single line start*****************************************
-        // var color = d3.scaleOrdinal(d3.schemeCategory10);  // set the colour scale    
-        // var path = svg.append("path")
-        //         .datum(data)
-        //         .attr("class", "line")
-        //         // .attr("d", line(d.values))
-        //         .attr("d", line)
-        //         // .style("stroke", function () { // Add dynamically
-        //         //     return d.color = color(d.key);
-        //         // })
-        //     // .attr("d", line(d.values));
-
-        //     // Variable to Hold Total Length
-        //     var totalLength = path.node().getTotalLength();
-
-        //     // Set Properties of Dash Array and Dash Offset and initiate Transition
-        //     path
-        //         .attr("stroke-dasharray", totalLength + " " + totalLength)
-        //         .attr("stroke-dashoffset", totalLength)
-        //         .transition() // Call Transition Method
-        //         .duration(4000) // Set Duration timing (ms) 500000
-        //         .ease(d3.easeLinear) // Set Easing option
-        //         .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
-        //************************single line end */
-
-
-
-        //**************************multiple lines */
-
-        // var allLines = svg.selectAll(".line")
-        // .data(data);
-
-        // allLines.exit().remove();
         d3.selectAll(".line").remove();
         d3.select(".line").remove();
         var dataToPlot = [];
         var curYMax = Number.NEGATIVE_INFINITY;
 
-        // function getMaxY(){
-        //     return data.reduce((max, b) => Math.max(max, b.abs_pos), data[0].abs_pos);
-        //   }
 
         if (selectedOption == "abs_pos") {
             for (i = 0; i < data.length; ++i) {
@@ -250,13 +171,6 @@ d3.csv("desired_data.csv", function (error, data) {
         svg.selectAll("g.y.axis")
             .call(yAxis);
 
-        // svg.append("text")
-        //     .attr("transform", "rotate(-90)")
-        //     .attr("y", 0 - margin.left)
-        //     .attr("x", 0 - (height / 2))
-        //     .attr("dy", "1em")
-        //     .style("text-anchor", "middle")
-        //     .text(yLabels[selectedType]);
         yLabel.text(yLabels[selectedType]);
 
         // nest ****************************************************
@@ -285,7 +199,6 @@ d3.csv("desired_data.csv", function (error, data) {
                     .style("stroke", function () { // Add dynamically
                         return d.color = color(d.key);
                     })
-                // .attr("d", line(d.values));
 
                 // Variable to Hold Total Length
                 var totalLength = path.node().getTotalLength();
@@ -324,7 +237,6 @@ d3.csv("desired_data.csv", function (error, data) {
         update(selectedType);
 
     })
-
 
     // Slider
     var slider = document.getElementById("myRange");

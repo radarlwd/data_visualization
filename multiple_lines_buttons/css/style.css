@@ -18,22 +18,22 @@
   #selectTypeButton{
     position: absolute;
     transition: .5s ease;
-    left: 50px;
-    top: 700px;
+    left: 50px; /* ADJUST */
+    top: 700px; /* ADJUST */
   }
 
   #selectNumButton{
     position: absolute;
     transition: .5s ease;
-    left: 250px;
-    top: 700px;
+    left: 250px; /* ADJUST */
+    top: 700px; /* ADJUST */
   }
 
   .slidecontainer {
     width: 100%; /* Width of the outside container */
     position: absolute;
-    left: 500px;
-    top: 700PX;
+    left: 500px; /* ADJUST */
+    top: 700PX; /* ADJUST */
   }
   
   /* The slider itself */
@@ -43,9 +43,6 @@
     width: 10%; /* Full-width */
     height: 25px; /* Specified height */
 
-    /* position: absolute;
-    left: 250px;
-    top: 375px; */
 
     background: #d3d3d3; /* Grey background */
     outline: none; /* Remove outline */
