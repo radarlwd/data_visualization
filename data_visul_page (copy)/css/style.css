@@ -1,0 +1,256 @@
+  body {
+    font: 12px sans-serif;
+  }
+
+  path {
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .axis path, .axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+  }
+
+    /* button group */
+    .btn-group select {
+      background-color: #4CAF50; /* Green background */
+      border: 1px solid green; /* Green border */
+      color: white; /* White text */
+      padding: 10px 24px; /* Some padding */
+      cursor: pointer; /* Pointer/hand icon */
+      float: left; /* Float the buttons side by side */
+    }
+    
+    .btn-group button:not(:last-child) {
+      border-right: none; /* Prevent double borders */
+    }
+    
+    /* Clear floats (clearfix hack) */
+    .btn-group:after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+    
+    /* Add a background color on hover */
+    .btn-group button:hover {
+      background-color: #3e8e41;
+    }
+
+  #selectTypeButton{
+    /* position: absolute; */
+    transition: .5s ease;
+    /*left: 50px; /* ADJUST */
+    /*top: 700px; /* ADJUST */
+  }
+
+  #selectNumButton{
+    /* position: absolute; */
+    transition: .5s ease;
+    /*left: 250px; /* ADJUST */
+    /*top: 700px; /* ADJUST */
+  }
+
+  .slidecontainer {
+    width: 100%; /* Width of the outside container */
+    /* position: absolute; */
+    /*left: 500px; /* ADJUST */
+    /*top: 700PX; /* ADJUST */
+  }
+  
+  /* The slider itself */
+  .slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 10%; /* Full-width */
+    height: 25px; /* Specified height */
+
+
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+  }
+  
+  /* Mouse-over effects */
+  .slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+  }
+  
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+  }
+
+/* RING */
+  #ball1 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color:rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball2 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball3 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball4 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball5 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball6 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball7 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball8 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball9 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball10 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball11 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball12 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball13 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball14 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball15 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball16 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball17 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball18 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball19 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball20 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball21 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }
+   #ball22 {
+    height: 25px;
+    width: 25px;
+    position: absolute;
+    background-color: rgb(0, 119, 255);
+    border-radius: 50%;
+   }

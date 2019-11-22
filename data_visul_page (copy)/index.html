@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Create two equal columns that floats next to each other */
+        .column {
+            float: left;
+            width: 50%;
+            padding: 10px;
+            height: 100%;
+            /* Should be removed. Only for demonstration */
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <h2>
+        <center> Model Performance </center>
+    </h2>
+
+    <div class="row">
+        <div class="column">
+            <h2>Ring</h2>
+            <p>Some text..</p>
+            <!-- <img src="ring.gif" alt="Simply Easy Learning" width="200" height="80"> -->
+            <p><button onclick="ballCircle()">Click Me</button></p>
+            <div id="ball-container" style="display: block;">
+            <div id="ball1"></div>
+            <div id="ball2"></div>
+            <div id="ball3"></div>
+            <div id="ball4"></div>
+            <div id="ball5"></div>
+            <div id="ball6"></div>
+            <div id="ball7"></div>
+            <div id="ball8"></div>
+            <div id="ball9"></div>
+            <div id="ball10"></div>
+            <div id="ball11"></div>
+            <div id="ball12"></div>
+            <div id="ball13"></div>
+            <div id="ball14"></div>
+            <div id="ball15"></div>
+            <div id="ball16"></div>
+            <div id="ball17"></div>
+            <div id="ball18"></div>
+            <div id="ball19"></div>
+            <div id="ball20"></div>
+            <div id="ball21"></div>
+            <div id="ball22"></div>
+            </div>
+            <canvas id="myCanvas" width="1000" height="1000" style="border:1px solid yellow; margin-top: 50px; margin-left: 10px;"></canvas>
+
+        </div>
+        <div class="column">
+            <h2>Line Chart</h2>
+            <!-- <p>Some text..</p> -->
+            <div id="lineGraph"></div>
+            <div class="btn-group">
+                <select id="selectModelButton"></select>
+                <select id="selectTypeButton"></select>
+                <select id="selectNumButton"></select>
+                <div class="slidecontainer">
+                    <p>Update Rate: <span id="demo"></span></p>
+                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                </div>
+
+
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+
+</body>
+<script src="http://d3js.org/d3.v4.min.js"></script>
+<script src="js/ring.js"></script>
+<script src="js/script.js"></script>
+
+</html>
