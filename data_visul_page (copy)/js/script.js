@@ -2,14 +2,17 @@ var xMax = { "value": 600.2 };
 var yMax = { "value": 0 };
 var yLabels = { abs_pos: "abs_pos (m)", CO: "CO (mg/s)", NOx: "NOx (mg/s)", fuel: "fuel (ml/s)", PMx: "PMx (mg/s)", speed: "speed (m/s)" };
 var yLabel;
-var selectedType;
-var selectedNumLines;
-var curData;
-var curDataFile = "data0.csv";
-var dataDropdown;
-var typeDropdown;
+var graphTitle;
+
+var curParameter;
+var curData = "";
+var curDataFile = "";// global var in file_list.js
+
+var algorithmDropdown;
+var parameterDropdown;
 var numDropdown;
-var duration = 5000;
+
+var duration = 50000;
 const GRAPH_WIDTH = 800 // ADJUST
 const GRAPH_HEIGHT = 300 // ADJUST
 var margin = { top: 60, right: 20, bottom: 30, left: 50 }, // ADJUST
@@ -32,7 +35,7 @@ var yAxis = d3.axisLeft()
 
 
 var line = d3.line()
-    .defined(function (d) { return selectedType != 'abs_pos' || d.y > 1; }) //avoid connecting the end point in one cyle to the start point of the next cycle
+    // .defined(function (d) { return selectedType != 'abs_pos' || d.y > 1; }) //avoid connecting the end point in one cyle to the start point of the next cycle
     .x(function (d) { return x(d.x); })
     .y(function (d) { return y(d.y); });
 
@@ -43,11 +46,6 @@ var svg = d3.select("#lineGraph").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 function addLine() {
-    // var typeMap = {
-    //     "abs_pos": { "x": data.time, "y": data.abs_pos, "id": data.id },
-    //     "time": { "x": data.time, "y": data.index, "id": data.id }
-    // };
-    // console.log(data);
 
     svg.append("g")
         .attr("class", "x axis")
@@ -72,39 +70,58 @@ function addLine() {
         .text("Value");
 
     svg.append("text")
-        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("text-anchor", "middle")  // this makes it easier to center the text as the transform is applied to the anchor
         .attr("x", width / 2)
         .attr("y", height + margin.bottom)
         .text("Timestep (sec.)");
+
+    graphTitle = svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text("Value vs Timestep Graph");
 }
 
-function addButtons(data) {
-    var num_cars = d3.map(data, function (d) { return (d.id) }).keys()
-    var parameterGroup = ['Parameters', 'abs_pos', 'CO', 'NOx', 'fuel', 'PMx', 'speed'];
-    var modelGroup = ['Models', 'data0.csv', 'data1.csv'];
-    var numberArray = [];
-    for (var i = 1; i <= num_cars.length; i++) {
-        numberArray.push(i);
+function addButtons() {
+    var algorithmGroup = ['Algorithm'];
+    for (i = 0; i < FILE_LIST.length; ++i) { //FILE_LIST is a 
+        algorithmGroup.push(FILE_LIST[i]);
     }
-    numberArray.unshift("Number of Vehicles");
-    selectedNumLines = numberArray[0];
+    var setupGroup = ['Setup', '1 car', '2 cars'];
+    var parameterGroup = ['Parameter', 'abs_pos', 'CO', 'NOx', 'fuel', 'PMx', 'speed'];
 
     // add the options to the button
-    dataDropdown = d3.select("#selectModelButton")
+    algorithmDropdown = d3.select("#selectAlgorithmButton")
         .selectAll('myOptions')
-        .data(modelGroup)
+        .data(algorithmGroup)
         .enter()
         .append('option')
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; }) // corresponding value returned by the button
         .each(function (d) {
-            if (d === "Models") {
+            if (d === "Algorithm") {
                 d3.select(this).property("disabled", true)
             }
         });
 
     // add the options to the button
-    typeDropdown = d3.select("#selectTypeButton")
+    setupDropdown = d3.select("#selectSetupButton")
+        .selectAll('myOptions')
+        .data(setupGroup)
+        .enter()
+        .append('option')
+        .text(function (d) { return d; }) // text showed in the menu
+        .attr("value", function (d) { return d; }) // corresponding value returned by the button
+        .each(function (d) {
+            if (d === "Setup") {
+                d3.select(this).property("disabled", true)
+            }
+        });
+
+    // add the options to the button
+    parameterDropdown = d3.select("#selectParameterButton")
         .selectAll('myOptions')
         .data(parameterGroup)
         .enter()
@@ -112,73 +129,46 @@ function addButtons(data) {
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; }) // corresponding value returned by the button
         .each(function (d) {
-            if (d === "Parameters") {
-                d3.select(this).property("disabled", true)
-            }
-        });
-
-    // add the options to the button
-    numDropdown = d3.select("#selectNumButton")
-        .selectAll('myOptions')
-        .data(numberArray)
-        .enter()
-        .append('option')
-        .text(function (d) { return d; }) // text showed in the menu
-        .attr("value", function (d) { return d; }) // corresponding value returned by the button
-        .each(function (d) {
-            if (d === "Number of Vehicles") {
+            if (d === "Parameter") {
                 d3.select(this).property("disabled", true)
             }
         });
 
     // When the button is changed, run the updateChart function
-    d3.select("#selectModelButton").on("change", function (d) {
+    d3.select("#selectAlgorithmButton").on("change", function (d) {
         var curr = d3.select(this).property("value");
-        console.log("curr = " + curr);
-        console.log("curDataFile = " + curr);
         if (curr != curDataFile) {
-            console.log("update file" + curr + ", " + curDataFile);
+
             curDataFile = curr;
             d3.csv(curDataFile, function (error, data) {
                 if (error) throw error;
                 curData = data;
+                updateGraph(curParameter, curData);
             });
-            update(selectedType, curData);
         }
-
     })
 
     // When the button is changed, run the updateChart function
-    d3.select("#selectTypeButton").on("change", function (d) {
-        //   // recover the option that has been chosen
-        selectedType = d3.select(this).property("value");
-        //   // run the updateChart function with this selected option
-        update(selectedType, curData);
-    })
+    d3.select("#selectParameterButton").on("change", function (d) {
+        // recover the option that has been chosen
+        curParameter = d3.select(this).property("value");
+        // run the updateChart function with this selected option
 
-    // When the button is changed, run the updateChart function
-    d3.select("#selectNumButton").on("change", function (d) {
-        //   // recover the option that has been chosen
-        var selectedOption = d3.select(this).property("value")
-        //   // run the updateChart function with this selected option
-        selectedNumLines = selectedOption;
-        console.log("I have " + selectedNumLines + " lines.");
-        // d3.select(".line").remove();
-        update(selectedType, curData);
-
+        updateGraph(curParameter, curData);
     })
 }
 
 // A function that update the chart
-function update(selectedOption, data) {
-
+function updateGraph(selectedOption, data) {
+        // var typeMap = {
+    //     "abs_pos": { "x": data.time, "y": data.abs_pos, "id": data.id },
+    //     "time": { "x": data.time, "y": data.index, "id": data.id }
+    // };
     d3.selectAll(".line").remove();
     d3.select(".line").remove();
     updateDropDownOptions(data);
     var dataToPlot = [];
     var curYMax = Number.NEGATIVE_INFINITY;
-
-    var availableTime = 0;
 
     if (selectedOption == "abs_pos") {
         for (i = 0; i < data.length; ++i) {
@@ -211,7 +201,6 @@ function update(selectedOption, data) {
         }
         curYMax = data.reduce((max, b) => Math.max(max, b.speed), data[0].speed);
     }
-    // curYMax = Math.ceil(curYMax);
 
     // update axis based on selection
     y = d3.scaleLinear()
@@ -224,11 +213,13 @@ function update(selectedOption, data) {
     svg.selectAll("g.y.axis")
         .call(yAxis);
 
-    yLabel.text(yLabels[selectedType]);
+    yLabel.text(yLabels[curParameter]);
 
-    // nest ****************************************************
-    console.log("update selection " + selectedOption);
-    // Nest the entries by symbol
+    // update title
+    graphTitle
+        .text(curDataFile.substring(0, curDataFile.length / 2) + ": " + yLabels[curParameter] + " vs. Time(sec.)");
+
+    // process each group using id's as keys
     var dataNest = d3.nest()
         .key(function (d) { return d.id; })// use as key
         // .entries(data);
@@ -237,85 +228,90 @@ function update(selectedOption, data) {
 
     var color = d3.scaleOrdinal(d3.schemeCategory10);  // set the colour scale
 
-    var remainingTime = selectedNumLines;
+
+    var car_ids = d3.map(data, function (d) { return (d.id) }).keys();
+    var matches = [];
+    var opacities = [];
+    for (i = 0; i < car_ids.length; ++i) {
+        var myRegex = /(.*)(_)(\d)*/g;
+        var match = myRegex.exec(car_ids[i]);
+        matches.push(match[1]);
+    }
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+    var uniqueMatches = matches.filter(onlyUnique);
+
+    for (i = 0; i < matches.length; ++i) {
+        for (j = 0; j < uniqueMatches.length; ++j) {
+            if (matches[i] == uniqueMatches[j]) {
+                opacities.push(Math.pow(0.5, j + 0.5));
+                break;
+            }
+        }
+    }
+    // console.log("opacity" + opacities);
+
+
     // Loop through each symbol / key
+    count = 0;
     dataNest.forEach(function (d) {
 
-        if (remainingTime > 0) {
-            --remainingTime;
-            console.log("added line " + availableTime);
-            // ***************************
-            var path = svg.append("path")
-                .datum(data)
-                .attr("class", "line")
-                .attr("d", line(d.values))//
-                .style("stroke", function () { // Add dynamically
-                    return d.color = color(d.key);
-                })
+        var path = svg.append("path")
+            .datum(data)
+            .attr("class", "line")
+            .attr("d", line(d.values))//
+            .style("stroke", function () { // Add dynamically
+                // return d.color = color(d.key);
+                return d.color = color(matches[count]);
+            })
+            .style("opacity", function () {
+                return opacities[count];
+            })
+        count += 1;
 
-            // Variable to Hold Total Length
-            var totalLength = path.node().getTotalLength();
+        // Variable to Hold Total Length
+        var totalLength = path.node().getTotalLength();
 
-            // Set Properties of Dash Array and Dash Offset and initiate Transition
-            path
-                .attr("stroke-dasharray", totalLength + " " + totalLength)
-                .attr("stroke-dashoffset", totalLength)
-                .transition() // Call Transition Method
-                .duration(duration) // Set Duration timing (ms) 500000
-                .ease(d3.easeLinear) // Set Easing option
-                .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
-        }
-        else {
-            console.log("no more!!!!!!!!!!!!!!!!!!!!")
-        }
+        // Set Properties of Dash Array and Dash Offset and initiate Transition
+        path
+            .attr("stroke-dasharray", totalLength + " " + totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition() // Call Transition Method
+            .duration(duration) // Set Duration timing (ms) 500000
+            .ease(d3.easeLinear) // Set Easing option
+            .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
+
+
     });
 }
 
 function updateDropDownOptions(data) {
 
-    var num_cars = d3.map(data, function (d) { return (d.id) }).keys()
-    console.log("number of cars = " + num_cars.length);
-    var parameterGroup = ['Parameters', 'abs_pos', 'CO', 'NOx', 'fuel', 'PMx', 'speed'];
-    var modelGroup = ['Models', 'data0.csv', 'data1.csv'];
-    var numberArray = [];
-    for (var i = 1; i <= num_cars.length; i++) {
-        console.log('add ' + i);
-        numberArray.push(i);
-    }
-    numberArray.unshift("Number of Vehicles");
-    
-    d3.select("#selectNumButton")
-        .selectAll('myOptions')
-        .data(numberArray)
-        .enter()
-        .append('option')
-        .text(function (d) { return d; }) // text showed in the menu
-        .attr("value", function (d) { return d; }) // corresponding value returned by the button
-        .each(function (d) {
-            if (d === "Number of Vehicles") {
-                d3.select(this).property("disabled", true)
-            }
-        });
+    // var select = document.getElementById('selectNumButton');
+    // console.log("delete total len = " + select.options.length);
+    // for (var i = 0; i < select.options.length; i++) {
+    //     console.log("delete" + select.options[i].value);
+    //     select.remove(i);
+    // }
+
+    // d3.select("#selectNumButton")
+    //     .selectAll('myOptions')
+    //     .data(numberArray)
+    //     .enter()
+    //     .append('option')
+    //     .text(function (d) { return d; }) // text showed in the menu
+    //     .attr("value", function (d) { return d; }) // corresponding value returned by the button
+    //     .each(function (d) {
+    //         if (d === "Number of Vehicles") {
+    //             d3.select(this).property("disabled", true)
+    //         }
+    //     });
 
 }
-// *********************************
-d3.csv(curDataFile, function (error, data) {
-    if (error) throw error;
-    // console.log(data);
-    curData = data;
 
+function launch() {
     addLine();
-    addButtons(data);
-
-    // Slider
-    var slider = document.getElementById("myRange");
-    var output = document.getElementById("demo");
-    output.innerHTML = slider.value; // Display the default slider value
-
-    // Update the current slider value (each time you drag the slider handle)
-    slider.oninput = function () {
-        output.innerHTML = this.value;
-        duration = 1 / this.value * 100000;
-    }
-
-});
+    addButtons();
+}
+launch();
