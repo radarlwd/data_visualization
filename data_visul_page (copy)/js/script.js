@@ -3,12 +3,15 @@ var yMax = { "value": 0 };
 var yLabels = { abs_pos: "abs_pos (m)", CO: "CO (mg/s)", NOx: "NOx (mg/s)", fuel: "fuel (ml/s)", PMx: "PMx (mg/s)", speed: "speed (m/s)" };
 var yLabel;
 var graphTitle;
+var lineColors;
 
 var curParameter;
 var curData = "";
 var curDataFile = "";// global var in file_list.js
 var curAlgorithm;
 var curSetup;
+
+var allCheckboxVal = false;
 
 var algorithmDropdown;
 var parameterDropdown;
@@ -77,7 +80,7 @@ function addLine() {
 
     svg.append("text")
         .attr("text-anchor", "middle")  // this makes it easier to center the text as the transform is applied to the anchor
-        .attr("x", width / 2)
+        .attr("x", width - margin.left)
         .attr("y", height + margin.bottom)
         .text("Timestep (sec.)");
 
@@ -85,8 +88,9 @@ function addLine() {
         .attr("x", (width / 2))
         .attr("y", 0 - (margin.top / 2))
         .attr("text-anchor", "middle")
-        .style("font-size", "16px")
+        .style("font-size", "18px")
         .style("text-decoration", "underline")
+        .style("font-weight", "bold")
         .text("Value vs. Timestep");
 
 }
@@ -105,12 +109,34 @@ function addCarCheckboxes(car_names) {
     // }
     // str = "<label class="container">Two, <input type="checkbox">, <span class="checkmark">,</span> </label>";
 
-    var $checkbox = $(`<label class="container"> ALL <input type="checkbox"> <span class="checkmark"></span> </label>`);
-    $("#btn_group2").append($checkbox);
+    var allCheckbox = $(`<label id = "allCheckbox" class="container"> ALL <input type="checkbox"> <span class="checkmark"></span> </label>`);
+    $("#btn_group2").append(allCheckbox);
+
+
     for (i = 0; i < car_names.length; ++i) {
         var $checkbox = $(`<label class="container">` + car_names[i] + `<input type="checkbox"> <span class="checkmark"></span> </label>`);
         $("#btn_group2").append($checkbox);
+        $checkbox.on("change", function (d) {
+
+            var childN = document.getElementById("btn_group2").childNodes;
+            for (i = 0; i < childN.length; ++i) {
+                childN[i].style.color = "#000000";
+            }
+            if (!this.childNodes[1].checked) {
+                childN[0].childNodes[1].checked = false;
+            }
+        })
     }
+    d3.select("#allCheckbox").on("change", function (d) {
+        allCheckboxVal = !this.childNodes[1].checked;
+
+        var childN = document.getElementById("btn_group2").childNodes;
+        for (i = 0; i < childN.length; ++i) {
+            childN[i].childNodes[1].checked = this.childNodes[1].checked;
+            childN[i].style.color = "#000000";
+        }
+
+    })
 }
 
 function deleteCarCheckboxes() {
@@ -126,13 +152,31 @@ function getCarCheckedValues() {
     //     myNode.removeChild(myNode.firstChild);
     // }
     var selectedOpts = [];
-    var childNodes = document.getElementById("btn_group2").childNodes;
-    for (i = 0; i < childNodes.length; ++i) {
-        if (childNodes[i].childNodes[1].checked == true) {
-            selectedOpts.push(childNodes[i].textContent.trim());
+    var childN = document.getElementById("btn_group2").childNodes;
+    for (i = 0; i < childN.length; ++i) {
+        if (childN[i].childNodes[1].checked == true) {
+            selectedOpts.push(childN[i].textContent.trim());
+            // childN[i].style.color = "magenta";
+            // console.log( childN[i].childNodes[0]);
+
         }
     }
     return selectedOpts;
+}
+
+//change color based on the color scheme
+function updateTextCheckboxes() {
+    var childN = document.getElementById("btn_group2").childNodes;
+    var color = d3.scaleOrdinal(d3.schemeCategory10);  // set the colour scale
+    for (i = 0; i < childN.length; ++i) {
+        if (childN[i].childNodes[1].checked == true) {
+            var myRegex = /(.*)(_)(.*)/g;
+            var match = myRegex.exec(childN[i].firstChild.textContent);
+            if (match != undefined) {
+                childN[i].style.color = color(match[1]);
+            }
+        }
+    }
 }
 
 function addButtons() {
@@ -226,13 +270,16 @@ function addButtons() {
                 curData = data;
                 curSetup = d3.select("#selectSetupButton").property("value");
                 parameterDropdown.property("disabled", false);
+                parameterDropdown.each(function (d) {
+                    if (d === "Parameter") {
+                        d3.select(this).property("disabled", true)
+                    }
+                });
 
                 var car_ids = d3.map(data, function (d) { return (d.id) }).keys();
 
                 deleteCarCheckboxes();
                 addCarCheckboxes(car_ids);
-
-                // updateGraph(curParameter, curData);
             });
         }
     })
@@ -240,8 +287,8 @@ function addButtons() {
     // d3.select("#selectParameterButton").property("disabled", false);
     d3.select("#startButton").on("click", function (d) {
         console.log("start!!!!");
-        // updateGraph(curParameter, curData, getCarCheckedValues());
         updatePage(curParameter, curData, getCarCheckedValues());
+        updateTextCheckboxes();
     })
 
 
@@ -255,6 +302,7 @@ function addButtons() {
 function updatePage(selectedOption, data, selectedKeys) {
     d3.selectAll(".line").remove();
     d3.select(".line").remove();
+
     updateDropDownOptions(data);
     var dataToPlot = [];
     var curYMax = Number.NEGATIVE_INFINITY;
@@ -307,7 +355,7 @@ function updatePage(selectedOption, data, selectedKeys) {
 
     // update title
     graphTitle
-        .text(curAlgorithm + " (" + curSetup + "): " + yLabels[curParameter] + " vs. Time(s.)");
+        .text(curAlgorithm + " (" + curSetup + "): " + yLabels[curParameter] + " vs. Time(s.)")
 
     // process each group using id's as keys
     var dataNest = d3.nest()
@@ -327,15 +375,13 @@ function updatePage(selectedOption, data, selectedKeys) {
 
     }
 
-    var color = d3.scaleOrdinal(d3.schemeCategory10);  // set the colour scale
-
     // ***************************************************
     // get all cars' ids
     var car_ids = d3.map(data, function (d) { return (d.id) }).keys();
     var matches = [];
     var opacities = [];
 
-    // extract the type of the id (exluding the number)
+    // extract the type of the id (excluding the number)
     for (i = 0; i < car_ids.length; ++i) {
         var myRegex = /(.*)(_)(\d)*/g;
         var match = myRegex.exec(car_ids[i]);
@@ -355,21 +401,36 @@ function updatePage(selectedOption, data, selectedKeys) {
         }
     }
 
-    updateGraph(selectedData, color, opacities);
+    updateGraph(selectedData, opacities);
 
     // TODO: CALL RING function here.
     // startRing();
     // You mayt need the following var
-    // dataNest: data grouped by car ID
     // selectedKeys: selected car
+    // dataNest: data grouped by car ID
 }
 
-// A function that update the chart
-function updateGraph(dataGroups, color, opacities) {
+function updateLineColors(dataGroups) {
+    var color = d3.scaleOrdinal(d3.schemeCategory10);  // set the colour scale
+    lineColors = [];
+    for (i = 0; i < dataGroups.length; ++i) {
+        var myRegex = /(.*)(_)(.*)/g;
+        var match = myRegex.exec(dataGroups[i].key);
+        lineColors.push(color(match[1]));
+    }
 
+    console.log("my colors");
+    console.log(lineColors);
+}
+
+// A function that updates the chart
+function updateGraph(dataGroups, opacities) {
+    updateLineColors(dataGroups);
     // Loop through each symbol / key
     count = 0;
-    dataGroups.forEach(function (d) {
+
+
+    dataGroups.forEach(function (d, i) {
 
         var path = svg.append("path")
             .datum(dataGroups)
@@ -377,15 +438,13 @@ function updateGraph(dataGroups, color, opacities) {
             .attr("d", line(d.values))//
             .style("stroke", function () { // Add dynamically
                 // return d.color = color(d.key);
+                return d.color = lineColors[count];
 
-                var myRegex = /(.*)(_)(.*)/g;
-                var match = myRegex.exec(d.key);
-                return d.color = color(match[1]);
             })
             .style("opacity", function () {
                 return opacities[count];
             })
-        count += 1;
+
 
         // Variable to Hold Total Length
         var totalLength = path.node().getTotalLength();
@@ -398,6 +457,9 @@ function updateGraph(dataGroups, color, opacities) {
             .duration(duration) // Set Duration timing (ms) 500000
             .ease(d3.easeLinear) // Set Easing option
             .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
+
+        count += 1;
+
     });
 
     //**************Add vertical line following mouse*******************
@@ -525,7 +587,7 @@ function extractAlgorithmsAndSetups(algorithms, filename_dict, algo_setup_dict, 
 
 //************************************************************
 function startRing() {
-// TODO define ring here
+    // TODO define ring here
 }
 
 
