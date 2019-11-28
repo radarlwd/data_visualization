@@ -67,6 +67,7 @@
     position: absolute;
     background-color:rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball2 {
     height: 25px;
@@ -74,6 +75,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball3 {
     height: 25px;
@@ -81,6 +83,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball4 {
     height: 25px;
@@ -88,6 +91,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball5 {
     height: 25px;
@@ -95,6 +99,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball6 {
     height: 25px;
@@ -102,6 +107,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball7 {
     height: 25px;
@@ -109,6 +115,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball8 {
     height: 25px;
@@ -116,6 +123,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball9 {
     height: 25px;
@@ -123,6 +131,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball10 {
     height: 25px;
@@ -130,6 +139,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball11 {
     height: 25px;
@@ -137,6 +147,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball12 {
     height: 25px;
@@ -144,6 +155,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball13 {
     height: 25px;
@@ -151,6 +163,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball14 {
     height: 25px;
@@ -158,6 +171,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball15 {
     height: 25px;
@@ -165,6 +179,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball16 {
     height: 25px;
@@ -172,6 +187,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball17 {
     height: 25px;
@@ -179,6 +195,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball18 {
     height: 25px;
@@ -186,6 +203,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball19 {
     height: 25px;
@@ -193,6 +211,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball20 {
     height: 25px;
@@ -200,6 +219,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball21 {
     height: 25px;
@@ -207,6 +227,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
    #ball22 {
     height: 25px;
@@ -214,6 +235,7 @@
     position: absolute;
     background-color: rgb(0, 119, 255);
     border-radius: 50%;
+    display: none;
    }
 
 

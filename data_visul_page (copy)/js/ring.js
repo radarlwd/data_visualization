@@ -65,6 +65,9 @@ function ballCircle() {
        var id = setInterval(frame, 5)
        var pos = 0;
        function frame() {
+            for (i = 1; i < 23; i++) {
+                eval('element' + i).style.display = "block";
+            }
             if (pos >= length) {
                 clearInterval(id);
             } else {
@@ -72,50 +75,6 @@ function ballCircle() {
                     eval('element' + (i + 1)).style.marginTop = (arrayy[i][pos] * 5) + 100 + 'px';
                     eval('element' + (i + 1)).style.marginLeft = (arrayx[i][pos] * 5) + 100 + 'px';
                 }
-                // element1.style.marginTop = (arrayy[0][pos] * 5) + 100 + 'px';
-                // element1.style.marginLeft = (arrayx[0][pos] * 5) + 100 + 'px';
-                // element2.style.marginTop = (arrayy[1][pos] * 5) + 100 + 'px';
-                // element2.style.marginLeft = (arrayx[1][pos] * 5) + 100 + 'px';
-                // element3.style.marginTop = (arrayy[2][pos] * 5) + 100 + 'px';
-                // element3.style.marginLeft = (arrayx[2][pos] * 5) + 100 + 'px';
-                // element4.style.marginTop = (arrayy[3][pos] * 5) + 100 + 'px';
-                // element4.style.marginLeft = (arrayx[3][pos] * 5) + 100 + 'px';
-                // element5.style.marginTop = (arrayy[4][pos] * 5) + 100 + 'px';
-                // element5.style.marginLeft = (arrayx[4][pos] * 5) + 100 + 'px';
-                // element6.style.marginTop = (arrayy[5][pos] * 5) + 100 + 'px';
-                // element6.style.marginLeft = (arrayx[5][pos] * 5) + 100 + 'px';
-                // element7.style.marginTop = (arrayy[6][pos] * 5) + 100 + 'px';
-                // element7.style.marginLeft = (arrayx[6][pos] * 5) + 100 + 'px';
-                // element8.style.marginTop = (arrayy[7][pos] * 5) + 100 + 'px';
-                // element8.style.marginLeft = (arrayx[7][pos] * 5) + 100 + 'px';
-                // element9.style.marginTop = (arrayy[8][pos] * 5) + 100 + 'px';
-                // element9.style.marginLeft = (arrayx[8][pos] * 5) + 100 + 'px';
-                // element10.style.marginTop = (arrayy[9][pos] * 5) + 100 + 'px';
-                // element10.style.marginLeft = (arrayx[9][pos] * 5) + 100 + 'px';
-                // element11.style.marginTop = (arrayy[10][pos] * 5) + 100 + 'px';
-                // element11.style.marginLeft = (arrayx[10][pos] * 5) + 100 + 'px';
-                // element12.style.marginTop = (arrayy[11][pos] * 5) + 100 + 'px';
-                // element12.style.marginLeft = (arrayx[11][pos] * 5) + 100 + 'px';
-                // element13.style.marginTop = (arrayy[12][pos] * 5) + 100 + 'px';
-                // element13.style.marginLeft = (arrayx[12][pos] * 5) + 100 + 'px';
-                // element14.style.marginTop = (arrayy[13][pos] * 5) + 100 + 'px';
-                // element14.style.marginLeft = (arrayx[13][pos] * 5) + 100 + 'px';
-                // element15.style.marginTop = (arrayy[14][pos] * 5) + 100 + 'px';
-                // element15.style.marginLeft = (arrayx[14][pos] * 5) + 100 + 'px';
-                // element16.style.marginTop = (arrayy[15][pos] * 5) + 100 + 'px';
-                // element16.style.marginLeft = (arrayx[15][pos] * 5) + 100 + 'px';
-                // element17.style.marginTop = (arrayy[16][pos] * 5) + 100 + 'px';
-                // element17.style.marginLeft = (arrayx[16][pos] * 5) + 100 + 'px';
-                // element18.style.marginTop = (arrayy[17][pos] * 5) + 100 + 'px';
-                // element18.style.marginLeft = (arrayx[17][pos] * 5) + 100 + 'px';
-                // element19.style.marginTop = (arrayy[18][pos] * 5) + 100 + 'px';
-                // element19.style.marginLeft = (arrayx[18][pos] * 5) + 100 + 'px';
-                // element20.style.marginTop = (arrayy[19][pos] * 5) + 100 + 'px';
-                // element20.style.marginLeft = (arrayx[19][pos] * 5) + 100 + 'px';
-                // element21.style.marginTop = (arrayy[20][pos] * 5) + 100 + 'px';
-                // element21.style.marginLeft = (arrayx[20][pos] * 5) + 100 + 'px';
-                // element22.style.marginTop = (arrayy[21][pos] * 5) + 100 + 'px';
-                // element22.style.marginLeft = (arrayx[21][pos] * 5) + 100 + 'px';
                 pos++;
             }
         }
