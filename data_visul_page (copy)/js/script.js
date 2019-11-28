@@ -156,8 +156,6 @@ function getCarCheckedValues() {
     for (i = 0; i < childN.length; ++i) {
         if (childN[i].childNodes[1].checked == true) {
             selectedOpts.push(childN[i].textContent.trim());
-            // childN[i].style.color = "magenta";
-            // console.log( childN[i].childNodes[0]);
 
         }
     }
@@ -418,9 +416,6 @@ function updateLineColors(dataGroups) {
         var match = myRegex.exec(dataGroups[i].key);
         lineColors.push(color(match[1]));
     }
-
-    console.log("my colors");
-    console.log(lineColors);
 }
 
 // A function that updates the chart
