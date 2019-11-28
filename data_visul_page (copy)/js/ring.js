@@ -3,24 +3,29 @@ var arrayy = [];
 var xtemp = [];
 var ytemp = [];
 var position = 0;
+var id = 'AUG_0';
+var length = 0;
 d3.csv("pos_data.csv", function(data) {
-    while (position < data.length) { 
-        for (var i = position; i < position + 6002; i = i + 1) {
-            // console.log(data[i].x);
-            // console.log(data[i].y);
-            xtemp.push(data[i].x);
-            ytemp.push(data[i].y);
+    length = data.length;
+    // console.log(data.length)
+    while (position < length) { 
+        // console.log(position)
+        id = data[position].id;
+        // console.log(id.valueOf() === data[position].id.valueOf());
+        while (position < length && id === data[position].id) {
+            // console.log(data[position].x);
+            // console.log(data[position].y);
+            xtemp.push(data[position].x);
+            ytemp.push(data[position].y);
+            position = position + 1;
+            // console.log(position);
         }
         arrayx.push(xtemp);
         arrayy.push(ytemp);
         xtemp = [];
         ytemp = [];
-        position = position + 6002;
     }
-
 });
-
-
 
 function ballCircle() {
        var element1 = document.getElementById('ball1');
@@ -49,7 +54,7 @@ function ballCircle() {
        var id = setInterval(frame, 5)
        var pos = 0;
        function frame() {
-            if (pos == 100000) {
+            if (pos >= length) {
                 clearInterval(id);
             } else {
                 element1.style.marginTop = (arrayy[0][pos] * 5) + 100 + 'px';
