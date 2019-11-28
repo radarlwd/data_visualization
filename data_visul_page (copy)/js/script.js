@@ -92,7 +92,6 @@ function addLine() {
 }
 
 function addCarCheckboxes(car_names) {
-    console.log(car_names);
     // for (i = 0; i < 22; ++i) {
     //     var checkbox = document.createElement("input");
     //     checkbox.type = "checkbox";
@@ -517,7 +516,6 @@ function extractAlgorithmsAndSetups(algorithms, filename_dict, algo_setup_dict, 
     }
 
     var uniqueAlgos = algos.filter(onlyUnique);
-    console.log(uniqueAlgos);
     for (i = 0; i < uniqueAlgos.length; ++i) {
         algorithms.push(uniqueAlgos[i]);
     }
