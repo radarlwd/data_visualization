@@ -5,12 +5,21 @@ var ytemp = [];
 var position = 0;
 var id = 'AUG_0';
 var length = 0;
+var cars = 0;
+var autocars = 0;
 d3.csv("pos_data.csv", function(data) {
     length = data.length;
     // console.log(data.length)
     while (position < length) { 
         // console.log(position)
         id = data[position].id;
+        console.log(id.substr(0,3))
+        if (id.substr(0, 3) === 'IDM') {
+            cars++
+        } else {
+            autocars++
+        }
+            
         // console.log(id.valueOf() === data[position].id.valueOf());
         while (position < length && id === data[position].id) {
             // console.log(data[position].x);
@@ -25,6 +34,8 @@ d3.csv("pos_data.csv", function(data) {
         xtemp = [];
         ytemp = [];
     }
+    console.log(cars)
+    console.log(autocars)
 });
 
 function ballCircle() {
