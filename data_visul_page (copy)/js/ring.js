@@ -55,7 +55,7 @@ function createelements() {
         otherobj.setAttribute('src', 'car.png');
         otherobj.style.position = "absolute";
         obj.appendChild(otherobj);
-        document.getElementById("ball-container").appendChild(obj);
+        document.getElementById("car-container").appendChild(obj);
     }
     for (i = 0; i < posofauto.length; i++) {
         var obj = document.createElement('div');
@@ -65,14 +65,14 @@ function createelements() {
         otherobj.setAttribute('src', 'car.png');
         otherobj.style.position = "absolute";
         obj.appendChild(otherobj);
-        document.getElementById("ball-container").appendChild(obj);
+        document.getElementById("car-container").appendChild(obj);
     }
     console.log(namesofreg);
     console.log(namesofauto);
 }
 
 var created = true;
-function ballCircle() {
+function carCircle() {
     console.log(created);
     if (created) {
         created = false;
@@ -81,7 +81,6 @@ function ballCircle() {
     } else {
         console.log('cars already created!');
     }
-    console.log(document.getElementById("ball-container"))
     var id = setInterval(frame, 7)
     var pos = 0;
     function frame() {
