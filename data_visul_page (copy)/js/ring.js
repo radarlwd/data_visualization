@@ -10,13 +10,14 @@ var autocars = 0;
 var posofreg = [];
 var posofauto = [];
 var iteration = 0;
+var namesofreg = [];
+var namesofauto = [];
 d3.csv("pos_data.csv", function(data) {
     length = data.length;
     // console.log(data.length)
     while (position < length) { 
         // console.log(position)
         id = data[position].id;
-        console.log(id.substr(0,3))
         if (id.substr(0, 3) === 'IDM') {
             cars++
             posofreg.push(iteration);
@@ -40,9 +41,8 @@ d3.csv("pos_data.csv", function(data) {
         ytemp = [];
         iteration++
     }
-    console.log(posofauto);
-    console.log(cars)
-    console.log(autocars)
+    console.log(arrayx);
+    console.log(arrayy)
 });
 
 var c = document.getElementById("myCanvas");
@@ -63,10 +63,9 @@ function createelements() {
         var obj = document.createElement('div');
         var otherobj = document.createElement("IMG");
         obj.id = ('element' + (posofreg[i]));
+        namesofreg.push('element' + (posofreg[i]));
         otherobj.setAttribute('src', 'car.png');
         otherobj.style.position = "absolute";
-        otherobj.style.marginLeft = '250px'
-        otherobj.style.marginTop = '110px'
         obj.appendChild(otherobj);
         document.getElementById("ball-container").appendChild(obj);
     }
@@ -74,37 +73,50 @@ function createelements() {
         var obj = document.createElement('div');
         var otherobj = document.createElement("IMG");
         obj.id = ('element' + (posofauto[i]));
+        namesofauto.push('element' + (posofauto[i]))
         otherobj.setAttribute('src', 'car.png');
         otherobj.style.position = "absolute";
-        otherobj.style.marginLeft = '250px'
-        otherobj.style.marginTop = '110px'
         obj.appendChild(otherobj);
         document.getElementById("ball-container").appendChild(obj);
     }
+    console.log(namesofreg);
+    console.log(namesofauto);
 }
+// var truth = [0,0,0,0,0,0,1];
 var created = true;
 function ballCircle() {
+    console.log(created);
     if (created) {
         created = false;
         createelements()
+        console.log('cars created!');
+    } else {
+        console.log('cars already created!');
     }
     console.log(document.getElementById("ball-container"))
     var id = setInterval(frame, 5)
     var pos = 0;
     function frame() {
-        // for (i = 1; i < 23; i++) {
-        //     eval('element' + i).style.display = "block";
-        // }
         if (pos >= length) {
             clearInterval(id);
         } else {
-            // (cars + autocars)
-            for (i = 0; i < (cars + autocars); i++) {
-                eval('element' + (i + 1)).style.marginTop = (arrayy[i][pos] * 5) + 100 + 'px';
-                eval('element' + (i + 1)).style.marginLeft = (arrayx[i][pos] * 5) + 100 + 'px';
+            for (i = 0; i < namesofreg.length; i++) {
+                eval(namesofreg[i]).style.marginLeft = (eval(arrayx[posofreg[i]][pos]) * 5) + 100 + 'px';
+                eval(namesofreg[i]).style.marginTop = (eval(arrayy[posofreg[i]][pos]) * 5) + 100 + 'px';
+              
+            }
+            for (i = 0; i < namesofauto.length; i++) {
+                eval(namesofauto[i]).style.marginLeft = (eval(arrayx[posofauto[i]][pos]) * 5) + 100 + 'px';
+                eval(namesofauto[i]).style.marginTop = (eval(arrayy[posofauto[i]][pos]) * 5) + 100 + 'px';
+              
+                // if (i < truth.length && truth[i]) {
+                //     console.log(namesofauto[i])
+                //     // console.log(eval(namesofauto[i]).style.marginLeft)
+                //     console.log(eval(namesofauto[i]).style.marginTop) 
+                // }
+                
             }
             pos++;
         }
     }
 }
-
