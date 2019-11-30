@@ -62,8 +62,8 @@ function createelements() {
     for (i = 0; i < posofreg.length; i++) {
         var obj = document.createElement('div');
         var otherobj = document.createElement("IMG");
-        obj.id = ('element' + (posofreg[i]));
-        namesofreg.push('element' + (posofreg[i]));
+        otherobj.id = ('IDM' + (posofreg[i]));
+        namesofreg.push('IDM' + (posofreg[i]));
         otherobj.setAttribute('src', 'car.png');
         otherobj.style.position = "absolute";
         obj.appendChild(otherobj);
@@ -72,8 +72,8 @@ function createelements() {
     for (i = 0; i < posofauto.length; i++) {
         var obj = document.createElement('div');
         var otherobj = document.createElement("IMG");
-        obj.id = ('element' + (posofauto[i]));
-        namesofauto.push('element' + (posofauto[i]))
+        otherobj.id = ('AUTO' + (posofauto[i]));
+        namesofauto.push('AUTO' + (posofauto[i]))
         otherobj.setAttribute('src', 'car.png');
         otherobj.style.position = "absolute";
         obj.appendChild(otherobj);
@@ -94,21 +94,19 @@ function ballCircle() {
         console.log('cars already created!');
     }
     console.log(document.getElementById("ball-container"))
-    var id = setInterval(frame, 5)
+    var id = setInterval(frame, 7)
     var pos = 0;
     function frame() {
         if (pos >= length) {
             clearInterval(id);
         } else {
             for (i = 0; i < namesofreg.length; i++) {
-                eval(namesofreg[i]).getElementsByTagName('IMG').style.marginLeft = (eval(arrayx[posofreg[i]][pos]) * 5) + 100 + 'px';
-                eval(namesofreg[i]).getElementsByTagName('img').style.marginTop = (eval(arrayy[posofreg[i]][pos]) * 5) + 100 + 'px';
-              
+                eval(namesofreg[i]).style.marginLeft = (eval(arrayx[posofreg[i]][pos]) * 5) + 100 + 'px';
+                eval(namesofreg[i]).style.marginTop = (eval(arrayy[posofreg[i]][pos]) * 5) + 100 + 'px';
             }
             for (i = 0; i < namesofauto.length; i++) {
-                eval(namesofauto[i]).getElementsByTagName('IMG').style.marginLeft = (eval(arrayx[posofauto[i]][pos]) * 5) + 100 + 'px';
-                eval(namesofauto[i]).getElementsByTagName('IMG').style.marginTop = (eval(arrayy[posofauto[i]][pos]) * 5) + 100 + 'px';
-              
+                eval(namesofauto[i]).style.marginLeft = (eval(arrayx[posofauto[i]][pos]) * 5) + 100 + 'px';
+                eval(namesofauto[i]).style.marginTop = (eval(arrayy[posofauto[i]][pos]) * 5) + 100 + 'px';
                 // if (i < truth.length && truth[i]) {
                 //     console.log(namesofauto[i])
                 //     // console.log(eval(namesofauto[i]).style.marginLeft)
