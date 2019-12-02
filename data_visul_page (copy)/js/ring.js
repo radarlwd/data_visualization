@@ -52,7 +52,7 @@ function createelements() {
         var otherobj = document.createElement("IMG");
         otherobj.id = ('IDM' + (posofreg[i]));
         namesofreg.push('IDM' + (posofreg[i]));
-        otherobj.setAttribute('src', 'car.png');
+        otherobj.setAttribute('src', 'yellow_car.png');
         otherobj.style.position = "absolute";
         obj.appendChild(otherobj);
         document.getElementById("car-container").appendChild(obj);
@@ -62,7 +62,7 @@ function createelements() {
         var otherobj = document.createElement("IMG");
         otherobj.id = ('AUTO' + (posofauto[i]));
         namesofauto.push('AUTO' + (posofauto[i]))
-        otherobj.setAttribute('src', 'car.png');
+        otherobj.setAttribute('src', 'blue_car.png');
         otherobj.style.position = "absolute";
         obj.appendChild(otherobj);
         document.getElementById("car-container").appendChild(obj);
