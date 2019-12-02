@@ -1,7 +1,9 @@
 var arrayx = [];
 var arrayy = [];
+var anglearray = []
 var xtemp = [];
 var ytemp = [];
+var angles = [];
 var position = 0;
 var id = 'AUG_0';
 var length = 0;
@@ -27,16 +29,20 @@ d3.csv("pos_data.csv", function(data) {
         while (position < length && id === data[position].id) {
             xtemp.push(data[position].x);
             ytemp.push(data[position].y);
-            position = position + 1;
+            angles.push(data[position].angle);
+            position++;
         }
         arrayx.push(xtemp);
         arrayy.push(ytemp);
+        anglearray.push(angles);
         xtemp = [];
         ytemp = [];
+        angles = [];
         iteration++
     }
     console.log(arrayx);
-    console.log(arrayy)
+    console.log(arrayy);
+    console.log(anglearray);
 });
 
 var c = document.getElementById("myCanvas");
@@ -88,12 +94,14 @@ function carCircle() {
             clearInterval(id);
         } else {
             for (i = 0; i < namesofreg.length; i++) {
-                eval(namesofreg[i]).style.marginLeft = (eval(arrayx[posofreg[i]][pos]) * 5) + 100 + 'px';
-                eval(namesofreg[i]).style.marginTop = (eval(arrayy[posofreg[i]][pos]) * 5) + 100 + 'px';
+                eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5 + 100 + 'px';
+                eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5 + 100 + 'px';
+                eval(namesofreg[i]).style.transform = "rotate("+ (anglearray[posofreg[i]][pos]) +"deg)";
             }
             for (i = 0; i < namesofauto.length; i++) {
-                eval(namesofauto[i]).style.marginLeft = (eval(arrayx[posofauto[i]][pos]) * 5) + 100 + 'px';
-                eval(namesofauto[i]).style.marginTop = (eval(arrayy[posofauto[i]][pos]) * 5) + 100 + 'px';  
+                eval(namesofauto[i]).style.marginLeft = arrayx[posofauto[i]][pos] * 5 + 100 + 'px';
+                eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5 + 100 + 'px';
+                eval(namesofauto[i]).style.transform = "rotate("+ (anglearray[posofauto[i]][pos]) +"deg)";
             }
             pos++;
         }
