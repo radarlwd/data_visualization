@@ -301,6 +301,7 @@ function updatePage(selectedOption, data, selectedKeys) {
     d3.selectAll(".line").remove();
     d3.select(".line").remove();
     d3.select("#vertical_time_line").remove();
+    d3.select("#vertical_time_line_text").remove();
 
     updateDropDownOptions(data);
     var dataToPlot = [];

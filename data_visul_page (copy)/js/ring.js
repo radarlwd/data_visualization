@@ -87,12 +87,14 @@ function carCircle() {
     } else {
         console.log('cars already created!');
     }
-    var id = setInterval(frame, 7)
+    var id = setInterval(frame, 40)
     var pos = 0;
     function frame() {
         if (pos >= length) {
             clearInterval(id);
         } else {
+            // changeverticalTimeLinePos(pos*0.1);
+
             for (i = 0; i < namesofreg.length; i++) {
                 eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5 + 102 + 'px';
                 eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5 + 92 + 'px';
