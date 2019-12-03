@@ -94,24 +94,14 @@ function carCircle() {
             clearInterval(id);
         } else {
             for (i = 0; i < namesofreg.length; i++) {
-                eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5 + 100 + 'px';
-                eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5 + 100 + 'px';
-                var angleDiff = anglearray[posofreg[i]][pos+1] - anglearray[posofreg[i]][pos]
-                if (angleDiff > 180) {
-                    eval(namesofreg[i]).style.transform = 'rotate('+ (-angleDiff + 360) +'deg)';
-                } else {
-                    eval(namesofreg[i]).style.transform = 'rotate('+ (-angleDiff) +'deg)';
-                }
+                eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5 + 102 + 'px';
+                eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5 + 92 + 'px';
+                eval(namesofreg[i]).style.transform = 'rotate('+ (-anglearray[posofreg[i]][pos] + 180) +'deg)';
             }
             for (i = 0; i < namesofauto.length; i++) {
-                eval(namesofauto[i]).style.marginLeft = arrayx[posofauto[i]][pos] * 5 + 100 + 'px';
-                eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5 + 100 + 'px';
-                var angleDiff = anglearray[posofauto[i]][pos+1] - anglearray[posofauto[i]][pos]
-                if (angleDiff > 180) {
-                    eval(namesofauto[i]).style.transform = 'rotate('+ (-angleDiff + 360) +'deg)';
-                } else {
-                    eval(namesofauto[i]).style.transform = 'rotate('+ (-angleDiff) +'deg)';
-                }
+                eval(namesofauto[i]).style.marginLeft = arrayx[posofauto[i]][pos] * 5 + 102 + 'px';
+                eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5 + 92 + 'px';
+                eval(namesofauto[i]).style.transform = 'rotate('+ (-anglearray[posofauto[i]][pos] + 180) +'deg)';
             }
             pos++;
         }
