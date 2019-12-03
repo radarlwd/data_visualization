@@ -93,7 +93,7 @@ function carCircle() {
         if (pos >= length) {
             clearInterval(id);
         } else {
-            // changeverticalTimeLinePos(pos*0.1);
+            changeverticalTimeLinePos(pos*0.1);
 
             for (i = 0; i < namesofreg.length; i++) {
                 eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5 + 102 + 'px';

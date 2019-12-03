@@ -40,7 +40,7 @@ var yAxis = d3.axisLeft()
 
 
 var line = d3.line()
-    // .defined(function (d) { return selectedType != 'abs_pos' || d.y > 1; }) //avoid connecting the end point in one cyle to the start point of the next cycle
+    .defined(function (d) { return curParameter != 'abs_pos' || d.y > 1; }) //avoid connecting the end point in one cyle to the start point of the next cycle
     .x(function (d) { return x(d.x); })
     .y(function (d) { return y(d.y); });
 
