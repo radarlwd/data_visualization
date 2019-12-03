@@ -89,15 +89,15 @@ function carCircle() {
         console.log('cars already created!');
     }
     if (time) {
-        var id = setInterval(frame, 10);
+        var id = setInterval(frame, 5);
         time = false;
     }
     var pos = 0;
     function frame() {
-        if (pos >= length) {
+        if (pos >= arrayx[0].length) {
+            console.log("cleared")
             clearInterval(id);
             time = true;
-
         } else {
             changeverticalTimeLinePos(pos*0.1);
 
@@ -111,7 +111,8 @@ function carCircle() {
                 eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5 + 92 + 'px';
                 eval(namesofauto[i]).style.transform = 'rotate('+ (-anglearray[posofauto[i]][pos] + 180) +'deg)';
             }
-            pos++;
+           
         }
+        pos++;
     }
 }
