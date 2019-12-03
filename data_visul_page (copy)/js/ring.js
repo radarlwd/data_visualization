@@ -78,6 +78,7 @@ function createelements() {
 }
 
 var created = true;
+var time = true;
 function carCircle() {
     console.log(created);
     if (created) {
@@ -87,11 +88,16 @@ function carCircle() {
     } else {
         console.log('cars already created!');
     }
-    var id = setInterval(frame, 40)
+    if (time) {
+        var id = setInterval(frame, 10);
+        time = false;
+    }
     var pos = 0;
     function frame() {
         if (pos >= length) {
             clearInterval(id);
+            time = true;
+
         } else {
             changeverticalTimeLinePos(pos*0.1);
 
