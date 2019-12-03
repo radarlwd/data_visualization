@@ -519,13 +519,14 @@ function extractAlgorithmsAndSetups(algorithms, filename_dict, algo_setup_dict, 
 
 //TODO: call this in the ring's setinterval
 function changeverticalTimeLinePos(curr_x) {
+    // console.log("curr_x =", curr_x);
     // curr_x is the time step in sec.
     if (curr_x < 600.2) {
         d3.select("#vertical_time_line")
-            .attr("x1", curr_x)
-            .attr("x2", curr_x)
+            .attr("x1", x(curr_x))
+            .attr("x2", x(curr_x))
         d3.select("#vertical_time_line_text")
-            .attr("x", curr_x)
+            .attr("x", x(curr_x))
     }
 }
 
