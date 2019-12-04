@@ -532,17 +532,57 @@ function changeverticalTimeLinePos(curr_x) {
     }
 }
 
-
-//************************************************************
+var id;
+var created = false;
+var namesofreg;
+var namesofauto;
 function startRing(data) {
     d3.selectAll(".images").remove();
+    console.log("cars cleared")
+    clearInterval(id);
+    console.log("interval cleared")
     var templist = retrieveData(data);
     var arrayx = templist[0];
     var arrayy = templist[1];
     var anglearray = templist[2];
     var posofreg = templist[3];
     var posofauto = templist[4];
-    carCircle(posofreg, posofauto, arrayx, arrayy, anglearray);   
+    console.log(arrayx)
+    console.log(arrayy)
+    var tempList = createelements(posofreg, posofauto);
+    namesofreg = tempList[0]; 
+    namesofauto = tempList[1];
+    console.log('cars created!');
+    if (created) {
+        console.log("cleared")
+        clearInterval(id);
+        created = false;
+    }
+    id = setInterval(frame, 10);
+    console.log("framed")
+    created = true;
+    var pos = 0;
+    function frame() {
+        if (pos >= arrayx[0].length) {
+            console.log("cleared")
+            clearInterval(id);
+            created = false;
+        } else {
+            changeverticalTimeLinePos(pos*0.1);
+            for (i = 0; i < namesofreg.length; i++) {
+                eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5.85 + 70 + 'px';
+                eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5.85 + 60 + 'px';
+                eval(namesofreg[i]).style.transform = 'rotate('+ (-anglearray[posofreg[i]][pos]) +'deg)';
+            }
+            for (i = 0; i < namesofauto.length; i++) {
+                eval(namesofauto[i]).style.marginLeft = arrayx[posofauto[i]][pos] * 5.85 + 70 + 'px';
+                eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5.85 + 60 + 'px';
+                eval(namesofauto[i]).style.transform = 'rotate('+ (-anglearray[posofauto[i]][pos]) +'deg)';
+            }
+           
+        }
+        pos++;
+    } 
 }
 
 
