@@ -1,28 +1,31 @@
-var arrayx = [];
-var arrayy = [];
-var anglearray = []
-var xtemp = [];
-var ytemp = [];
-var angles = [];
-var posofreg = [];
-var posofauto = [];
-var position = 0;
-var id = '';
-var length = 0;
-var cars = 0;
-var autocars = 0;
-var iteration = 0;
-d3.csv("pos_data.csv", function(data) {
+
+function retrieveData(data) {
+    var xarray = [];
+    var yarray = [];
+    var aArray = []
+    var xtemp = [];
+    var ytemp = [];
+    var angles = [];
+    var arrayreg = [];
+    var arrayauto = [];
+    var position = 0;
+    var id = '';
+    var length = 0;
+    var cars = 0;
+    var autocars = 0;
+    var iteration = 0;
     length = data.length;
+    console.log(data.length)
     while (position < length) { 
         id = data[position].id;
         if (id.substr(0, 3) === 'IDM') {
             cars++
-            posofreg.push(iteration);
+            arrayreg.push(iteration);
         } else {
             autocars++
-            posofauto.push(iteration);
+            arrayauto.push(iteration);
         }
+      
             
         while (position < length && id === data[position].id) {
             xtemp.push(data[position].x);
@@ -30,18 +33,21 @@ d3.csv("pos_data.csv", function(data) {
             angles.push(data[position].angle);
             position++;
         }
-        arrayx.push(xtemp);
-        arrayy.push(ytemp);
-        anglearray.push(angles);
+        xarray.push(xtemp);
+        yarray.push(ytemp);
+        aArray.push(angles);
         xtemp = [];
         ytemp = [];
         angles = [];
         iteration++
     }
-    console.log(arrayx);
-    console.log(arrayy);
-    console.log(anglearray);
-});
+    console.log("x", xarray);
+    console.log("y", yarray);
+    console.log("ang", aArray)
+    console.log("arrayreg", arrayreg);
+    console.log("arrayauto", arrayauto);
+    return [xarray, yarray, aArray, arrayreg, arrayauto];
+}
 
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
@@ -51,66 +57,76 @@ ctx.arc(313, 270, 250, 0, 2 * Math.PI);
 ctx.strokeStyle = "#808080";
 ctx.stroke();
 
-var namesofreg = [];
-var namesofauto = [];
-function createelements() {
-    for (i = 0; i < posofreg.length; i++) {
+
+function createelements(arrayreg, arrayauto) {
+    var namesofreg = [];
+    var namesofauto = [];
+    for (i = 0; i < arrayreg.length; i++) {
         var obj = document.createElement('div');
+        obj.className = "images";
         var otherobj = document.createElement("IMG");
-        otherobj.id = ('IDM' + (posofreg[i]));
-        namesofreg.push('IDM' + (posofreg[i]));
+        otherobj.id = ('IDM' + (arrayreg[i]));
+        namesofreg.push('IDM' + (arrayreg[i]));
         otherobj.setAttribute('src', 'yellow_car.png');
         otherobj.style.position = "absolute";
         obj.appendChild(otherobj);
         document.getElementById("car-container").appendChild(obj);
     }
-    for (i = 0; i < posofauto.length; i++) {
+    for (i = 0; i < arrayauto.length; i++) {
         var obj = document.createElement('div');
+        obj.className = "images";
         var otherobj = document.createElement("IMG");
-        otherobj.id = ('AUTO' + (posofauto[i]));
-        namesofauto.push('AUTO' + (posofauto[i]))
+        otherobj.id = ('AUTO' + (arrayauto[i]));
+        namesofauto.push('AUTO' + (arrayauto[i]))
         otherobj.setAttribute('src', 'blue_car.png');
         otherobj.style.position = "absolute";
         obj.appendChild(otherobj);
         document.getElementById("car-container").appendChild(obj);
     }
-    console.log(namesofreg);
-    console.log(namesofauto);
+    return [namesofreg, namesofauto];
+    // console.log(namesofreg);
+    // console.log(namesofauto);
 }
 
-var created = true;
-var time = true;
-function carCircle() {
+function carCircle(arrayreg, arrayauto, xarray, yarray, aArray) {
+    console.log(xarray)
+    console.log(yarray)
+    var created = true;
+    var time = true;
+    var namesofreg;
+    var namesofauto;
     console.log(created);
     if (created) {
         created = false;
-        createelements()
+        var tempList = createelements(arrayreg, arrayauto);
+        namesofreg = tempList[0]; 
+        namesofauto = tempList[1];
         console.log('cars created!');
     } else {
         console.log('cars already created!');
     }
     if (time) {
         var id = setInterval(frame, 10);
+        console.log("framed")
         time = false;
     }
     var pos = 0;
     function frame() {
-        if (pos >= arrayx[0].length) {
+        if (pos >= xarray[0].length) {
             console.log("cleared")
             clearInterval(id);
             time = true;
         } else {
             changeverticalTimeLinePos(pos*0.1);
-
             for (i = 0; i < namesofreg.length; i++) {
-                eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5.85 + 70 + 'px';
-                eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5.85 + 60 + 'px';
-                eval(namesofreg[i]).style.transform = 'rotate('+ (-anglearray[posofreg[i]][pos]) +'deg)';
+                eval(namesofreg[i]).style.marginLeft = xarray[arrayreg[i]][pos] * 5.85 + 70 + 'px';
+                eval(namesofreg[i]).style.marginTop = yarray[arrayreg[i]][pos] * 5.85 + 60 + 'px';
+                eval(namesofreg[i]).style.transform = 'rotate('+ (-aArray[arrayreg[i]][pos]) +'deg)';
             }
             for (i = 0; i < namesofauto.length; i++) {
-                eval(namesofauto[i]).style.marginLeft = arrayx[posofauto[i]][pos] * 5.85 + 70 + 'px';
-                eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5.85 + 60 + 'px';
-                eval(namesofauto[i]).style.transform = 'rotate('+ (-anglearray[posofauto[i]][pos]) +'deg)';
+                eval(namesofauto[i]).style.marginLeft = xarray[arrayauto[i]][pos] * 5.85 + 70 + 'px';
+                eval(namesofauto[i]).style.marginTop = yarray[arrayauto[i]][pos] * 5.85 + 60 + 'px';
+                eval(namesofauto[i]).style.transform = 'rotate('+ (-aArray[arrayauto[i]][pos]) +'deg)';
             }
            
         }

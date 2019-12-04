@@ -405,10 +405,11 @@ function updatePage(selectedOption, data, selectedKeys) {
 
     // TODO: CALL RING function here.
     // startRing();
-    // You mayt need the following var
+    // You may need the following var
     // selectedKeys: selected car
     // dataNest: data grouped by car ID
     // data
+    startRing(data);
 }
 
 function updateLineColors(dataGroups) {
@@ -533,8 +534,15 @@ function changeverticalTimeLinePos(curr_x) {
 
 
 //************************************************************
-function startRing() {
-    // TODO define ring here
+function startRing(data) {
+    d3.selectAll(".images").remove();
+    var templist = retrieveData(data);
+    var arrayx = templist[0];
+    var arrayy = templist[1];
+    var anglearray = templist[2];
+    var posofreg = templist[3];
+    var posofauto = templist[4];
+    carCircle(posofreg, posofauto, arrayx, arrayy, anglearray);   
 }
 
 
