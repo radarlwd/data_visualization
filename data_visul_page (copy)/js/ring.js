@@ -63,7 +63,7 @@ var c = document.getElementById("Canvas2");
 var ctx = c.getContext("2d");
 ctx.lineWidth = 5;
 ctx.beginPath();
-ctx.arc(313, 270, 220, 0, 2 * Math.PI);
+ctx.arc(313, 270, 232, 0, 2 * Math.PI);
 ctx.strokeStyle = "#000000";
 ctx.fillStyle = "#FFFFFF"
 ctx.stroke();
