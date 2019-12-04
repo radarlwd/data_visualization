@@ -4,16 +4,14 @@ var anglearray = []
 var xtemp = [];
 var ytemp = [];
 var angles = [];
+var posofreg = [];
+var posofauto = [];
 var position = 0;
-var id = 'AUG_0';
+var id = '';
 var length = 0;
 var cars = 0;
 var autocars = 0;
-var posofreg = [];
-var posofauto = [];
 var iteration = 0;
-var namesofreg = [];
-var namesofauto = [];
 d3.csv("pos_data.csv", function(data) {
     length = data.length;
     while (position < length) { 
@@ -47,11 +45,14 @@ d3.csv("pos_data.csv", function(data) {
 
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
-ctx.lineWidth = 35;
+ctx.lineWidth = 38;
 ctx.beginPath();
-ctx.arc(310, 268, 215, 0, 2 * Math.PI);
+ctx.arc(313, 270, 250, 0, 2 * Math.PI);
+ctx.strokeStyle = "#808080";
 ctx.stroke();
 
+var namesofreg = [];
+var namesofauto = [];
 function createelements() {
     for (i = 0; i < posofreg.length; i++) {
         var obj = document.createElement('div');
@@ -89,7 +90,7 @@ function carCircle() {
         console.log('cars already created!');
     }
     if (time) {
-        var id = setInterval(frame, 15);
+        var id = setInterval(frame, 10);
         time = false;
     }
     var pos = 0;
@@ -102,13 +103,13 @@ function carCircle() {
             changeverticalTimeLinePos(pos*0.1);
 
             for (i = 0; i < namesofreg.length; i++) {
-                eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5 + 102 + 'px';
-                eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5 + 92 + 'px';
+                eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5.85 + 70 + 'px';
+                eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5.85 + 60 + 'px';
                 eval(namesofreg[i]).style.transform = 'rotate('+ (-anglearray[posofreg[i]][pos]) +'deg)';
             }
             for (i = 0; i < namesofauto.length; i++) {
-                eval(namesofauto[i]).style.marginLeft = arrayx[posofauto[i]][pos] * 5 + 102 + 'px';
-                eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5 + 92 + 'px';
+                eval(namesofauto[i]).style.marginLeft = arrayx[posofauto[i]][pos] * 5.85 + 70 + 'px';
+                eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5.85 + 60 + 'px';
                 eval(namesofauto[i]).style.transform = 'rotate('+ (-anglearray[posofauto[i]][pos]) +'deg)';
             }
            

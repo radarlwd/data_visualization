@@ -408,6 +408,7 @@ function updatePage(selectedOption, data, selectedKeys) {
     // You mayt need the following var
     // selectedKeys: selected car
     // dataNest: data grouped by car ID
+    // data
 }
 
 function updateLineColors(dataGroups) {
