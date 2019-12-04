@@ -591,17 +591,17 @@ function startRing(data) {
 
 
 var dict = {
-    'IDM_AVRider_FUZO' : "a",
-    'IDM_AVRider_MLYAU2' : "b",
-    'IDM_AVRider_MLYAU1' : "c",
-    'IDM_AVRider_AUG' : "d",
-    'IDM_AVRider_LACC' : "e",
-    'IDM_AVRider_PI' : "f",
-    'IDM_AVRider_LACC_Unstable' : "g",
-    'IDM_AVRider_FUZN' : "h",
-    'IDM_AVRider_LinOpt' : "i",
-    'IDM_AVRider_FS' : "j",
-    'IDM_AVRider_BCM' : "k",
+    'IDM_AVRider_FUZO' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_MLYAU2' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_MLYAU1' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_AUG' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_LACC' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_PI' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_LACC_Unstable' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_FUZN' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_LinOpt' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_FS' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
+    'IDM_AVRider_BCM' : "This is a sample sentence which we will change for the description of the algorithms. Hopefully it will be around this length.",
   };
 
 function updateTitle() {
