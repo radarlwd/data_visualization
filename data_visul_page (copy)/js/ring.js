@@ -51,11 +51,23 @@ function retrieveData(data) {
 
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
-ctx.lineWidth = 38;
+ctx.lineWidth = 5;
 ctx.beginPath();
-ctx.arc(313, 270, 250, 0, 2 * Math.PI);
-ctx.strokeStyle = "#808080";
+ctx.arc(313, 270, 267, 0, 2 * Math.PI);
+ctx.strokeStyle = "#000000";
+ctx.fillStyle = "#808080"
 ctx.stroke();
+ctx.fill();
+
+var c = document.getElementById("Canvas2");
+var ctx = c.getContext("2d");
+ctx.lineWidth = 5;
+ctx.beginPath();
+ctx.arc(313, 270, 220, 0, 2 * Math.PI);
+ctx.strokeStyle = "#000000";
+ctx.fillStyle = "#FFFFFF"
+ctx.stroke();
+ctx.fill();
 
 
 function createelements(posofreg, posofauto) {

@@ -231,8 +231,9 @@ function addButtons() {
     parameterDropdown.property("disabled", true);
 
     // When the button is changed, run the updateChart function
+    var curr;
     d3.select("#selectAlgorithmButton").on("change", function (d) {
-        var curr = d3.select(this).property("value");
+        curr = d3.select(this).property("value");
         curAlgorithm = curr;
         // d3.select("#selectParameterButton").property("disabled", false);
 
@@ -409,7 +410,9 @@ function updatePage(selectedOption, data, selectedKeys) {
     // selectedKeys: selected car
     // dataNest: data grouped by car ID
     // data
+    updateTitle();
     startRing(data);
+
 }
 
 function updateLineColors(dataGroups) {
@@ -583,8 +586,27 @@ function startRing(data) {
         }
         pos++;
     } 
+    
 }
 
+
+var dict = {
+    'IDM_AVRider_FUZO' : "a",
+    'IDM_AVRider_MLYAU2' : "b",
+    'IDM_AVRider_MLYAU1' : "c",
+    'IDM_AVRider_AUG' : "d",
+    'IDM_AVRider_LACC' : "e",
+    'IDM_AVRider_PI' : "f",
+    'IDM_AVRider_LACC_Unstable' : "g",
+    'IDM_AVRider_FUZN' : "h",
+    'IDM_AVRider_LinOpt' : "i",
+    'IDM_AVRider_FS' : "j",
+    'IDM_AVRider_BCM' : "k",
+  };
+
+function updateTitle() {
+    document.getElementById("paragraph").innerHTML = dict[curAlgorithm];
+}
 
 function launch() {
     addLine();
