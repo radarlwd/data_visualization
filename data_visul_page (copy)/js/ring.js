@@ -15,7 +15,7 @@ function retrieveData(data) {
     var autocars = 0;
     var iteration = 0;
     length = data.length;
-    console.log(data.length)
+    // console.log(data.length)
     while (position < length) { 
         id = data[position].id;
         if (id.substr(0, 3) === 'IDM') {
@@ -41,11 +41,11 @@ function retrieveData(data) {
         angles = [];
         iteration++
     }
-    console.log("x", arrayx);
-    console.log("y", arrayy);
-    console.log("ang", anglearray)
-    console.log("posofreg", posofreg);
-    console.log("posofauto", posofauto);
+    // console.log("x", arrayx);
+    // console.log("y", arrayy);
+    // console.log("ang", anglearray)
+    // console.log("posofreg", posofreg);
+    // console.log("posofauto", posofauto);
     return [arrayx, arrayy, anglearray, posofreg, posofauto];
 }
 

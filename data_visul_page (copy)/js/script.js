@@ -51,7 +51,7 @@ var svg = d3.select("#lineGraph").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
+    return self.indexOf(value) == index;
 }
 
 function addLine() {
@@ -181,9 +181,20 @@ function addButtons() {
     var algorithmGroup = ['Algorithm'];
     var setupGroup = ['Setup'];
     var parameterGroup = ['Parameter', 'abs_pos', 'CO', 'NOx', 'fuel', 'PMx', 'speed'];
-    var filename_dict = {};
+    var data_filename_dict = {};
     var algo_setup_dict = {};
-    extractAlgorithmsAndSetups(algorithmGroup, filename_dict, algo_setup_dict, FILE_LIST);
+    var metric_filename_dict = {};
+    extractAlgorithmsAndSetups(algorithmGroup, data_filename_dict, algo_setup_dict, FILE_LIST);
+    loadMetricsFileNames(metric_filename_dict, METRICS_FILE_LIST);
+
+    // d3.select("#selectParameterButton").property("disabled", false);
+    startButton = d3.select("#startButton").on("click", function (d) {
+        console.log("start!!!!");
+        updatePage(curParameter, curData, getCarCheckedValues());
+        updateTextCheckboxes();
+    })
+
+    startButton.property("disabled", true);
 
     // add the options to the button
     algorithmDropdown = d3.select("#selectAlgorithmButton")
@@ -194,10 +205,11 @@ function addButtons() {
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; }) // corresponding value returned by the button
         .each(function (d) {
-            if (d === "Algorithm") {
+            if (d == "Algorithm") {
                 d3.select(this).property("disabled", true)
             }
         });
+
 
     // add the options to the button
     setupDropdown = d3.select("#selectSetupButton")
@@ -208,7 +220,7 @@ function addButtons() {
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; }) // corresponding value returned by the button
         .each(function (d) {
-            if (d === "Setup") {
+            if (d == "Setup") {
                 d3.select(this).property("disabled", true)
             }
         })
@@ -223,7 +235,7 @@ function addButtons() {
         .text(function (d) { return d; }) // text showed in the menu
         .attr("value", function (d) { return d; }) // corresponding value returned by the button
         .each(function (d) {
-            if (d === "Parameter") {
+            if (d == "Parameter") {
                 d3.select(this).property("disabled", true)
             }
         });
@@ -233,8 +245,11 @@ function addButtons() {
     // When the button is changed, run the updateChart function
     var curr;
     d3.select("#selectAlgorithmButton").on("change", function (d) {
+        startButton.property("disabled", true);
+
         curr = d3.select(this).property("value");
         curAlgorithm = curr;
+        updateTitle();
         // d3.select("#selectParameterButton").property("disabled", false);
 
         var select = document.getElementById('selectSetupButton');
@@ -260,8 +275,9 @@ function addButtons() {
     })
 
     d3.select("#selectSetupButton").on("change", function (d) {
-        var key = d3.select("#selectAlgorithmButton").property("value") + d3.select(this).property("value");
-        var curr = filename_dict[key];
+        var select = d3.select(this).property("value");
+        var key = d3.select("#selectAlgorithmButton").property("value") + select;
+        var curr = data_filename_dict[key];
         if (curr != curDataFile) {
             curDataFile = curr;
             d3.csv(curDataFile, function (error, data) {
@@ -270,7 +286,7 @@ function addButtons() {
                 curSetup = d3.select("#selectSetupButton").property("value");
                 parameterDropdown.property("disabled", false);
                 parameterDropdown.each(function (d) {
-                    if (d === "Parameter") {
+                    if (d == "Parameter") {
                         d3.select(this).property("disabled", true)
                     }
                 });
@@ -279,22 +295,22 @@ function addButtons() {
 
                 deleteCarCheckboxes();
                 addCarCheckboxes(car_ids);
+                console.log("filename = " + metric_filename_dict[select]);
+                loadMetricsFile(metric_filename_dict[select]);
             });
         }
     })
 
-    // d3.select("#selectParameterButton").property("disabled", false);
-    d3.select("#startButton").on("click", function (d) {
-        console.log("start!!!!");
-        updatePage(curParameter, curData, getCarCheckedValues());
-        updateTextCheckboxes();
-    })
+
+
 
 
     // When the button is changed, run the updateChart function
     d3.select("#selectParameterButton").on("change", function (d) {
         // recover the option that has been chosen
         curParameter = d3.select(this).property("value");
+
+        startButton.property("disabled", false);
     })
 }
 
@@ -410,7 +426,6 @@ function updatePage(selectedOption, data, selectedKeys) {
     // selectedKeys: selected car
     // dataNest: data grouped by car ID
     // data
-    updateTitle();
     startRing(data);
 
 }
@@ -496,22 +511,26 @@ function updateDropDownOptions(data) {
 }
 
 function extractAlgorithmsAndSetups(algorithms, filename_dict, algo_setup_dict, file_strs) {
-    //"data/IDM_AVRider_AUG--0IDM_22AUG--sugiyama_20191014-1314411571084081.113794-emission.csv"
+    //"data/raw_data/IDM_AVRider_AUG--0IDM_22AUG--sugiyama_20191014-1314411571084081.113794-emission.csv"
 
     var algos = [];
     for (i = 0; i < file_strs.length; ++i) {
-        var myRegex = /(.*\/)(.*)(--)(.*)(--)(.*)/g;
-        var match = myRegex.exec(file_strs[i]);
-        algos.push(match[2]);
-        var algo_str = match[2];
+        // var myRegex = /(.*\/)(.*)(--)(.*)(--)(.*)/g;
+        var myRegex = /(.*)(--)(.*)(--)(.*)/g;
+
+        var filename = file_strs[i];
+        var filename = filename.replace(/^.*[\\\/]/, '')
+        var match = myRegex.exec(filename);
+        algos.push(match[1]);
+        var algo_str = match[1];
 
         if (algo_setup_dict[algo_str] === undefined) {
             algo_setup_dict[algo_str] = [];
         }
 
-        algo_setup_dict[algo_str].push(match[4]);
+        algo_setup_dict[algo_str].push(match[3]);
 
-        var key = match[2] + match[4];
+        var key = match[1] + match[3];
         filename_dict[key] = file_strs[i];
     }
 
@@ -522,6 +541,18 @@ function extractAlgorithmsAndSetups(algorithms, filename_dict, algo_setup_dict, 
 
 }
 
+function loadMetricsFileNames(metric_filename_dict, file_strs) {
+    for (i = 0; i < file_strs.length; ++i) {
+        // var myRegex = /(.*\/)(.*)(--)(.*)(--)(.*)/g;
+        var myRegex = /(.*)(\.)(csv)/g;
+        var filename = file_strs[i];
+        var filename = filename.replace(/^.*[\\\/]/, '')
+        var filename = filename.substring(4); //ignore Big_0IDM_22AUG
+        var match = myRegex.exec(filename);
+        var setup_str = match[1];
+        metric_filename_dict[setup_str] = file_strs[i];
+    }
+}
 //TODO: call this in the ring's setinterval
 function changeverticalTimeLinePos(curr_x) {
     // console.log("curr_x =", curr_x);
@@ -535,74 +566,185 @@ function changeverticalTimeLinePos(curr_x) {
     }
 }
 
+function loadMetricsFile(filename) {
+
+
+    d3.select("#metrics_table").remove();
+
+
+
+    // function tabulate(data, columns) {
+    //     // https://bl.ocks.org/d3noob/5d47df5374d210b6f651
+    //     var table = d3.select("#table1").append("table")
+    //         .attr("style", "margin-left: 250px")
+    //         .attr("id", "metrics_table")
+    //         .attr("style", "margin-left: 200px")
+    //         .style("border-collapse", "collapse")
+    //         .style("border", "2px black solid"),
+    //         thead = table.append("thead"),
+    //         tbody = table.append("tbody");
+
+    //     // append the header row
+    //     thead.append("tr")
+    //         .selectAll("th")
+    //         .data(columns)
+    //         .enter()
+    //         .append("th")
+    //         .text(function (column) { return column; })
+    //         .style("font-size", "18px");
+
+    //     // create a row for each object in the data
+    //     var rows = tbody.selectAll("tr")
+    //         .data(data)
+    //         .enter()
+    //         .append("tr");
+
+    //     // create a cell in each row for each column
+    //     var cells = rows.selectAll("td")
+    //         .data(function (row) {
+    //             return columns.map(function (column) {
+    //                 return { column: column, value: row[column] };
+    //             });
+    //         })
+    //         .enter()
+    //         .append("td")
+    //         .attr("style", "font-family: Courier")
+    //         .style("font-size", "18px")
+    //         .html(function (d) { return d.value; });
+
+    //     return table;
+    // }
+
+    // The table generation function
+    function tabulate(data, columns) {
+        var table = d3.select("#table1").append("table")
+            .attr("id", "metrics_table")
+            // .attr("style", "margin-left: 200px")
+            .style("border-collapse", "collapse")// <= Add this line in
+            .style("border", "2px black solid"), // <= Add this line in
+            thead = table.append("thead"),
+            tbody = table.append("tbody");
+
+        // append the header row
+        thead.append("tr")
+            .selectAll("th")
+            .data(columns)
+            .enter()
+            .append("th")
+            .text(function (column) { return column; })
+            .style("font-size", "12px");
+
+        // create a row for each object in the data
+        var rows = tbody.selectAll("tr")
+            .data(data)
+            .enter()
+            .append("tr");
+
+        // create a cell in each row for each column
+        var cells = rows.selectAll("td")
+            .data(function (row) {
+                return columns.map(function (column) {
+                    return { column: column, value: row[column] };
+                });
+            })
+            .enter()
+            .append("td")
+            .attr("style", "font-family: Courier") // sets the font style
+            .style("font-size", "18px")
+            .html(function (d) { return d.value; });
+
+        return table;
+    }
+
+    // render the table
+    // var peopleTable = tabulate(data, ["date", "close", "open", "diff"]);
+
+    // peopleTable.selectAll("tbody tr")
+    //     .sort(function (a, b) {
+    //         return d3.descending(a.close, b.close);
+    //     });
+
+    // peopleTable.selectAll("thead th")
+    //     .text(function (column) {
+    //         return column.charAt(0).toUpperCase() + column.substr(1);
+    //     });
+
+    d3.csv(filename, function (error, data) {
+        if (error) throw error;
+        var metrics_table = tabulate(data, ["stableT", "stableSpd", "MaxGap", "AvgFuelRate", "VMT"]);
+    });
+
+
+}
+
 var id;
 var created = false;
 var namesofreg;
 var namesofauto;
 function startRing(data) {
     d3.selectAll(".images").remove();
-    console.log("cars cleared")
+    // console.log("cars cleared")
     clearInterval(id);
-    console.log("interval cleared")
+    // console.log("interval cleared")
     var templist = retrieveData(data);
     var arrayx = templist[0];
     var arrayy = templist[1];
     var anglearray = templist[2];
     var posofreg = templist[3];
     var posofauto = templist[4];
-    console.log(arrayx)
-    console.log(arrayy)
+    // console.log(arrayx)
+    // console.log(arrayy)
     var tempList = createelements(posofreg, posofauto);
-    namesofreg = tempList[0]; 
+    namesofreg = tempList[0];
     namesofauto = tempList[1];
-    console.log('cars created!');
+    // console.log('cars created!');
     if (created) {
-        console.log("cleared")
+        // console.log("cleared")
         clearInterval(id);
         created = false;
     }
     id = setInterval(frame, 10);
-    console.log("framed")
+    // console.log("framed")
     created = true;
     var pos = 0;
     function frame() {
         if (pos >= arrayx[0].length) {
-            console.log("cleared")
+            // console.log("cleared")
             clearInterval(id);
             created = false;
         } else {
-            changeverticalTimeLinePos(pos*0.1);
+            changeverticalTimeLinePos(pos * 0.1);
             for (i = 0; i < namesofreg.length; i++) {
                 eval(namesofreg[i]).style.marginLeft = arrayx[posofreg[i]][pos] * 5.85 + 70 + 'px';
                 eval(namesofreg[i]).style.marginTop = arrayy[posofreg[i]][pos] * 5.85 + 60 + 'px';
-                eval(namesofreg[i]).style.transform = 'rotate('+ (-anglearray[posofreg[i]][pos]) +'deg)';
+                eval(namesofreg[i]).style.transform = 'rotate(' + (-anglearray[posofreg[i]][pos]) + 'deg)';
             }
             for (i = 0; i < namesofauto.length; i++) {
                 eval(namesofauto[i]).style.marginLeft = arrayx[posofauto[i]][pos] * 5.85 + 70 + 'px';
                 eval(namesofauto[i]).style.marginTop = arrayy[posofauto[i]][pos] * 5.85 + 60 + 'px';
-                eval(namesofauto[i]).style.transform = 'rotate('+ (-anglearray[posofauto[i]][pos]) +'deg)';
+                eval(namesofauto[i]).style.transform = 'rotate(' + (-anglearray[posofauto[i]][pos]) + 'deg)';
             }
-           
+
         }
         pos++;
-    } 
-    
+    }
+
 }
 
 
 var dict = {
-    'IDM_AVRider_PI' : "PI: PI with Saturation <br> Automated vehicle model using PI with saturation. Mixing of the leading vehicle speed and the target speed is used as the command speed to mitigating the speed difference between the subject vehicle and the leading vehicle while keeps the momentum to drive at the target speed. The target speed is mainly based on the average of historic speed of a passing short period, which can smooth out speed fluctuation. The catch speed is added when the space-gap is larger than a threshold to keep the momentum when it is safe.",
-    'IDM_AVRider_MLYAU1' : "MLYAU1: Lyapunov Based Controller Type 1 <br> Automated vehicle model using controller derived using Lyapunov method. There are two types of Lyapunov based controller considereds. This is the type 1.",
-    'IDM_AVRider_MLYAU2' : "MLYAU2: Lyapunov Based Controller Type 2 <br> Automated vehicle model using controller derived using Lyapunov method. There are two types of Lyapunov based controller considereds. This is the type 2. ",
-    'IDM_AVRider_AUG' : "AUG: Augmented Optimal-Velocity-Follow-the-Leader <br> Automated vehicle model using augmented optimal-velocity-follow-the-leader control. The controller is basically the augmentation of the so called optima-velocity-follow-the-leader model with a term regulating the difference between the current speed and the desired speed.",
-    'IDM_AVRider_LACC_Unstable' : "LACC: Linear Adaptive Cruise Control <br> Automated vehicle model using linear adaptive cruise control. The adaptive cruise control regulates the speed error, which is the difference in speed between the subject vehicle and the leading vehicle, and the gap error, which is the difference between the current time-gap and the desired time-gap. The control action is the linear combination of these two errors. ",
-    'IDM_AVRider_LACC' : "LACC: Linear Adaptive Cruise Control <br> Automated vehicle model using linear adaptive cruise control. The adaptive cruise control regulates the speed error, which is the difference in speed between the subject vehicle and the leading vehicle, and the gap error, which is the difference between the current time-gap and the desired time-gap. The control action is the linear combination of these two errors. ",
-    'IDM_AVRider_FUZN' : "FUZ1: <br> Automated vehicle model using fuzzy control as the core of the car following controller. There are two types of the fuzzy controller based automated vehicle model considered. This is the type 1 of the fuzzy controller.",
-    'IDM_AVRider_FUZO' : "FUZ2: <br> Automated vehicle model using fuzzy control as the core of the car following controller. There are two types of the fuzzy controller based automated vehicle model considered. This is the type 2 of the fuzzy controller.",
-    'IDM_AVRider_LinOpt' : "LinOpt: Linear Optimal Control <br> Automated vehicle model using linear optimal control. The optimal control is derived via linear quadratic regulation with the linearized model of the ring traffic around the equilibrium point.",
-    'IDM_AVRider_FS' : "FS: FollowerStopper <br> Automated vehicle model using FollowerStopper. The 2 dimension space of the speed difference and the space-gap difference between the subject vehicle and the preceding vehicle is segmented into a few sets using a set of nonlinear functions. The safe region, the adaptation region I, the adaption region II, and the stop region are defined accordingly. When in the safe region, the subject vehicle is controlled to drive at the preset free flow speed. In the adaptation region I and the adaptation II, varying mixing ratio of leading vehicle speed and the free flow speed is command as the control action. In the stop region, zero is command to stop the vehicle.",
-    'IDM_AVRider_BCM' : "BCM: Bilateral Control Model <br> Automated vehicle model using bilateral control model. The BCM is a type of linear controller that uses both the information of the leading vehicle and the following vehicle. The measurement of the leading vehicle and the following vehicle can be realized with the sensors at the front-end and at the rear-end.",
-  };
+    'IDM_AVRider_PI': "PI: PI with Saturation <br> Automated vehicle model using PI with saturation. Mixing of the leading vehicle speed and the target speed is used as the command speed to mitigating the speed difference between the subject vehicle and the leading vehicle while keeps the momentum to drive at the target speed. The target speed is mainly based on the average of historic speed of a passing short period, which can smooth out speed fluctuation. The catch speed is added when the space-gap is larger than a threshold to keep the momentum when it is safe.",
+    'IDM_AVRider_MLYAU1': "MLYAU1: Lyapunov Based Controller Type 1 <br> Automated vehicle model using controller derived using Lyapunov method. There are two types of Lyapunov based controller considereds. This is the type 1.",
+    'IDM_AVRider_MLYAU2': "MLYAU2: Lyapunov Based Controller Type 2 <br> Automated vehicle model using controller derived using Lyapunov method. There are two types of Lyapunov based controller considereds. This is the type 2. ",
+    'IDM_AVRider_AUG': "AUG: Augmented Optimal-Velocity-Follow-the-Leader <br> Automated vehicle model using augmented optimal-velocity-follow-the-leader control. The controller is basically the augmentation of the so called optima-velocity-follow-the-leader model with a term regulating the difference between the current speed and the desired speed.",
+    'IDM_AVRider_LACC_Unstable': "LACC: Linear Adaptive Cruise Control <br> Automated vehicle model using linear adaptive cruise control. The adaptive cruise control regulates the speed error, which is the difference in speed between the subject vehicle and the leading vehicle, and the gap error, which is the difference between the current time-gap and the desired time-gap. The control action is the linear combination of these two errors. ",
+    'IDM_AVRider_LACC': "LACC: Linear Adaptive Cruise Control <br> Automated vehicle model using linear adaptive cruise control. The adaptive cruise control regulates the speed error, which is the difference in speed between the subject vehicle and the leading vehicle, and the gap error, which is the difference between the current time-gap and the desired time-gap. The control action is the linear combination of these two errors. ",
+    'IDM_AVRider_FUZN': "FUZ1: <br> Automated vehicle model using fuzzy control as the core of the car following controller. There are two types of the fuzzy controller based automated vehicle model considered. This is the type 1 of the fuzzy controller.",
+    'IDM_AVRider_FUZO': "FUZ2: <br> Automated vehicle model using fuzzy control as the core of the car following controller. There are two types of the fuzzy controller based automated vehicle model considered. This is the type 2 of the fuzzy controller.",
+    'IDM_AVRider_LinOpt': "LinOpt: Linear Optimal Control <br> Automated vehicle model using linear optimal control. The optimal control is derived via linear quadratic regulation with the linearized model of the ring traffic around the equilibrium point.",
+    'IDM_AVRider_FS': "FS: FollowerStopper <br> Automated vehicle model using FollowerStopper. The 2 dimension space of the speed difference and the space-gap difference between the subject vehicle and the preceding vehicle is segmented into a few sets using a set of nonlinear functions. The safe region, the adaptation region I, the adaption region II, and the stop region are defined accordingly. When in the safe region, the subject vehicle is controlled to drive at the preset free flow speed. In the adaptation region I and the adaptation II, varying mixing ratio of leading vehicle speed and the free flow speed is command as the control action. In the stop region, zero is command to stop the vehicle.",
+    'IDM_AVRider_BCM': "BCM: Bilateral Control Model <br> Automated vehicle model using bilateral control model. The BCM is a type of linear controller that uses both the information of the leading vehicle and the following vehicle. The measurement of the leading vehicle and the following vehicle can be realized with the sensors at the front-end and at the rear-end.",
+};
 
 function updateTitle() {
     document.getElementById("paragraph").innerHTML = dict[curAlgorithm];
