@@ -748,7 +748,9 @@ var dict = {
 };
 
 function updateTitle() {
-    document.getElementById("paragraph").innerHTML = dict[curAlgorithm];
+    var string = dict[curAlgorithm];
+    var result = string.fontsize(3);
+    document.getElementById("paragraph").innerHTML = result;
 }
 
 function launch() {
