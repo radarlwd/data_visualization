@@ -185,6 +185,7 @@ function addButtons() {
     var algo_setup_dict = {};
     var metric_filename_dict = {};
     extractAlgorithmsAndSetups(algorithmGroup, data_filename_dict, algo_setup_dict, FILE_LIST);
+    console.log(METRICS_FILE_LIST);
     loadMetricsFileNames(metric_filename_dict, METRICS_FILE_LIST);
 
     // d3.select("#selectParameterButton").property("disabled", false);
